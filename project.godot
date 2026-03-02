@@ -10,9 +10,18 @@ config_version=5
 
 [application]
 
-config/name="BowserBlackJack"
+config/name="Bowsers Casino Games"
+run/main_scene="res://scenes/menu/MainMenu.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GlobalManager="*res://scripts/managers/GlobalManager.gd"
+
+[display]
+
+window/stretch/mode="canvas_items"
 
 [physics]
 
@@ -22,3 +31,4 @@ config/icon="res://icon.svg"
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true

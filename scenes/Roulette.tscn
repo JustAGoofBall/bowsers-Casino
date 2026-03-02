@@ -1,0 +1,705 @@
+[gd_scene load_steps=6 format=3 uid="uid://roulette_scene"]
+
+[ext_resource type="Script" path="res://scripts/RouletteManager.gd" id="1_roulette_script"]
+[ext_resource type="Texture2D" uid="uid://bw4ve0e5lcyvk" path="res://assets/BowserCasino.png" id="2_bg"]
+[ext_resource type="Texture2D" path="res://assets/roulette/SpikeBall.png" id="3_ball"]
+[ext_resource type="Texture2D" path="res://assets/roulette/RedStarChip.png" id="4_red_chip"]
+[ext_resource type="Texture2D" path="res://assets/roulette/BlueStarChip.png" id="5_blue_chip"]
+[ext_resource type="Texture2D" path="res://assets/bowser/BowserDefault.png" id="6_bowser"]
+[ext_resource type="Texture2D" uid="uid://dabxtow6c1hgh" path="res://assets/roulette/roulette-wheel.png" id="7_wheel"]
+
+[node name="Roulette" type="Node2D"]
+script = ExtResource("1_roulette_script")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(576, 324)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_bg")
+
+[node name="TitleLabel" type="Label" parent="."]
+offset_left = 350.0
+offset_top = 10.0
+offset_right = 800.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+text = "BOWSER'S ROULETTE"
+horizontal_alignment = 1
+
+[node name="BowserSprite" type="Sprite2D" parent="."]
+position = Vector2(180, 320)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("6_bowser")
+
+[node name="WheelArea" type="ColorRect" parent="."]
+offset_left = 750.0
+offset_top = 80.0
+offset_right = 1010.0
+offset_bottom = 340.0
+color = Color(0.08, 0.04, 0.01, 0)
+
+[node name="Wheel" type="Node2D" parent="WheelArea"]
+position = Vector2(130, 130)
+
+[node name="WheelSprite" type="Sprite2D" parent="WheelArea/Wheel"]
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("7_wheel")
+
+[node name="Ball" type="Sprite2D" parent="WheelArea/Wheel"]
+position = Vector2(0, -120)
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("3_ball")
+
+[node name="ResultLabel" type="Label" parent="."]
+offset_left = 750.0
+offset_top = 350.0
+offset_right = 1010.0
+offset_bottom = 385.0
+theme_override_colors/font_color = Color(1, 1, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 20
+text = "Place your bets!"
+horizontal_alignment = 1
+
+[node name="TotalBetLabel" type="Label" parent="."]
+offset_left = 750.0
+offset_top = 385.0
+offset_right = 1010.0
+offset_bottom = 415.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
+text = "Total Bet: 0 coins"
+horizontal_alignment = 1
+
+[node name="BetControls" type="HBoxContainer" parent="."]
+offset_left = 750.0
+offset_top = 420.0
+offset_right = 1010.0
+offset_bottom = 455.0
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="BetLabel" type="Label" parent="BetControls"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Bet:"
+
+[node name="DecreaseBet" type="Button" parent="BetControls"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "-"
+
+[node name="BetAmount" type="Label" parent="BetControls"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "10"
+
+[node name="IncreaseBet" type="Button" parent="BetControls"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "+"
+
+[node name="SpinButton" type="Button" parent="."]
+offset_left = 770.0
+offset_top = 465.0
+offset_right = 990.0
+offset_bottom = 510.0
+theme_override_font_sizes/font_size = 26
+text = "SPIN!"
+
+[node name="ClearBetsButton" type="Button" parent="."]
+offset_left = 770.0
+offset_top = 520.0
+offset_right = 990.0
+offset_bottom = 555.0
+theme_override_font_sizes/font_size = 16
+text = "Clear Bets"
+
+[node name="BettingBoard" type="ColorRect" parent="."]
+offset_left = 220.0
+offset_top = 70.0
+offset_right = 730.0
+offset_bottom = 580.0
+color = Color(0.12, 0.08, 0.02, 1)
+
+[node name="BoardFrame" type="ColorRect" parent="BettingBoard"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 502.0
+offset_bottom = 502.0
+color = Color(0.06, 0.45, 0.1, 1)
+
+[node name="ZeroBox" type="ColorRect" parent="BettingBoard"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 18.0
+offset_right = 88.0
+offset_bottom = 268.0
+color = Color(0.05, 0.4, 0.08, 1)
+
+[node name="ZeroButton" type="Button" parent="BettingBoard/ZeroBox"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 65.0
+offset_bottom = 120.0
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 42
+text = "0"
+
+[node name="DoubleZeroButton" type="Button" parent="BettingBoard/ZeroBox"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 130.0
+offset_right = 65.0
+offset_bottom = 245.0
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 42
+text = "00"
+
+[node name="NumberGrid" type="GridContainer" parent="BettingBoard"]
+layout_mode = 0
+offset_left = 98.0
+offset_top = 18.0
+offset_right = 492.0
+offset_bottom = 268.0
+theme_override_constants/h_separation = 3
+theme_override_constants/v_separation = 3
+columns = 12
+
+[node name="Num3" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "3"
+
+[node name="Num6" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "6"
+
+[node name="Num9" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "9"
+
+[node name="Num12" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "12"
+
+[node name="Num15" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "15"
+
+[node name="Num18" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "18"
+
+[node name="Num21" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "21"
+
+[node name="Num24" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "24"
+
+[node name="Num27" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "27"
+
+[node name="Num30" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "30"
+
+[node name="Num33" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "33"
+
+[node name="Num36" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "36"
+
+[node name="Num2" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "2"
+
+[node name="Num5" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "5"
+
+[node name="Num8" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "8"
+
+[node name="Num11" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "11"
+
+[node name="Num14" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "14"
+
+[node name="Num17" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "17"
+
+[node name="Num20" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "20"
+
+[node name="Num23" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "23"
+
+[node name="Num26" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "26"
+
+[node name="Num29" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "29"
+
+[node name="Num32" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "32"
+
+[node name="Num35" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "35"
+
+[node name="Num1" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "1"
+
+[node name="Num4" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "4"
+
+[node name="Num7" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "7"
+
+[node name="Num10" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "10"
+
+[node name="Num13" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "13"
+
+[node name="Num16" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "16"
+
+[node name="Num19" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "19"
+
+[node name="Num22" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "22"
+
+[node name="Num25" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "25"
+
+[node name="Num28" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "28"
+
+[node name="Num31" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.3)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "31"
+
+[node name="Num34" type="Button" parent="BettingBoard/NumberGrid"]
+custom_minimum_size = Vector2(30, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 16
+text = "34"
+
+[node name="OutsideBets" type="VBoxContainer" parent="BettingBoard"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 278.0
+offset_right = 492.0
+offset_bottom = 492.0
+theme_override_constants/separation = 8
+
+[node name="Row1" type="HBoxContainer" parent="BettingBoard/OutsideBets"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Low" type="Button" parent="BettingBoard/OutsideBets/Row1"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 16
+text = "1-18"
+
+[node name="Even" type="Button" parent="BettingBoard/OutsideBets/Row1"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 16
+text = "EVEN"
+
+[node name="RedBet" type="Button" parent="BettingBoard/OutsideBets/Row1"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.15, 0.15, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
+text = "RED"
+
+[node name="BlackBet" type="Button" parent="BettingBoard/OutsideBets/Row1"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 0.5)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 18
+text = "BLACK"
+
+[node name="Odd" type="Button" parent="BettingBoard/OutsideBets/Row1"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 16
+text = "ODD"
+
+[node name="High" type="Button" parent="BettingBoard/OutsideBets/Row1"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 16
+text = "19-36"
+
+[node name="Row2" type="HBoxContainer" parent="BettingBoard/OutsideBets"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Dozen1" type="Button" parent="BettingBoard/OutsideBets/Row2"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 15
+text = "1st Dozen (1-12)"
+
+[node name="Dozen2" type="Button" parent="BettingBoard/OutsideBets/Row2"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 15
+text = "2nd Dozen (13-24)"
+
+[node name="Dozen3" type="Button" parent="BettingBoard/OutsideBets/Row2"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 15
+text = "3rd Dozen (25-36)"
+
+[node name="Row3" type="HBoxContainer" parent="BettingBoard/OutsideBets"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Col1" type="Button" parent="BettingBoard/OutsideBets/Row3"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 15
+text = "Column 1 (3-36)"
+
+[node name="Col2" type="Button" parent="BettingBoard/OutsideBets/Row3"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 15
+text = "Column 2 (2-35)"
+
+[node name="Col3" type="Button" parent="BettingBoard/OutsideBets/Row3"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 15
+text = "Column 3 (1-34)"
+
+[node name="BackButton" type="Button" parent="."]
+offset_left = 20.0
+offset_top = 590.0
+offset_right = 150.0
+offset_bottom = 630.0
+theme_override_font_sizes/font_size = 18
+text = "< Back"
+
+[connection signal="pressed" from="BetControls/DecreaseBet" to="." method="_on_decrease_bet_pressed"]
+[connection signal="pressed" from="BetControls/IncreaseBet" to="." method="_on_increase_bet_pressed"]
+[connection signal="pressed" from="SpinButton" to="." method="_on_spin_button_pressed"]
+[connection signal="pressed" from="ClearBetsButton" to="." method="_on_clear_bets_pressed"]
+[connection signal="pressed" from="BettingBoard/ZeroBox/ZeroButton" to="." method="_on_number_button_pressed" binds= [0]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num3" to="." method="_on_number_button_pressed" binds= [3]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num6" to="." method="_on_number_button_pressed" binds= [6]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num9" to="." method="_on_number_button_pressed" binds= [9]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num12" to="." method="_on_number_button_pressed" binds= [12]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num15" to="." method="_on_number_button_pressed" binds= [15]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num18" to="." method="_on_number_button_pressed" binds= [18]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num21" to="." method="_on_number_button_pressed" binds= [21]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num24" to="." method="_on_number_button_pressed" binds= [24]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num27" to="." method="_on_number_button_pressed" binds= [27]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num30" to="." method="_on_number_button_pressed" binds= [30]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num33" to="." method="_on_number_button_pressed" binds= [33]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num36" to="." method="_on_number_button_pressed" binds= [36]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num2" to="." method="_on_number_button_pressed" binds= [2]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num5" to="." method="_on_number_button_pressed" binds= [5]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num8" to="." method="_on_number_button_pressed" binds= [8]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num11" to="." method="_on_number_button_pressed" binds= [11]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num14" to="." method="_on_number_button_pressed" binds= [14]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num17" to="." method="_on_number_button_pressed" binds= [17]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num20" to="." method="_on_number_button_pressed" binds= [20]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num23" to="." method="_on_number_button_pressed" binds= [23]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num26" to="." method="_on_number_button_pressed" binds= [26]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num29" to="." method="_on_number_button_pressed" binds= [29]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num32" to="." method="_on_number_button_pressed" binds= [32]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num35" to="." method="_on_number_button_pressed" binds= [35]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num1" to="." method="_on_number_button_pressed" binds= [1]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num4" to="." method="_on_number_button_pressed" binds= [4]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num7" to="." method="_on_number_button_pressed" binds= [7]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num10" to="." method="_on_number_button_pressed" binds= [10]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num13" to="." method="_on_number_button_pressed" binds= [13]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num16" to="." method="_on_number_button_pressed" binds= [16]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num19" to="." method="_on_number_button_pressed" binds= [19]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num22" to="." method="_on_number_button_pressed" binds= [22]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num25" to="." method="_on_number_button_pressed" binds= [25]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num28" to="." method="_on_number_button_pressed" binds= [28]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num31" to="." method="_on_number_button_pressed" binds= [31]]
+[connection signal="pressed" from="BettingBoard/NumberGrid/Num34" to="." method="_on_number_button_pressed" binds= [34]]
+[connection signal="pressed" from="BettingBoard/ZeroBox/DoubleZeroButton" to="." method="_on_double_zero_button_pressed"]
+[connection signal="pressed" from="BettingBoard/OutsideBets/Row1/Low" to="." method="_on_low_button_pressed"]
+[connection signal="pressed" from="BettingBoard/OutsideBets/Row1/Even" to="." method="_on_even_button_pressed"]
+[connection signal="pressed" from="BettingBoard/OutsideBets/Row1/RedBet" to="." method="_on_red_button_pressed"]
+[connection signal="pressed" from="BettingBoard/OutsideBets/Row1/BlackBet" to="." method="_on_black_button_pressed"]
+[connection signal="pressed" from="BettingBoard/OutsideBets/Row1/Odd" to="." method="_on_odd_button_pressed"]
+[connection signal="pressed" from="BettingBoard/OutsideBets/Row1/High" to="." method="_on_high_button_pressed"]
+[connection signal="pressed" from="BettingBoard/OutsideBets/Row2/Dozen1" to="." method="_on_dozen1_button_pressed"]
+[connection signal="pressed" from="BettingBoard/OutsideBets/Row2/Dozen2" to="." method="_on_dozen2_button_pressed"]
+[connection signal="pressed" from="BettingBoard/OutsideBets/Row2/Dozen3" to="." method="_on_dozen3_button_pressed"]
+[connection signal="pressed" from="BettingBoard/OutsideBets/Row3/Col1" to="." method="_on_column_button_pressed" binds= [1]]
+[connection signal="pressed" from="BettingBoard/OutsideBets/Row3/Col2" to="." method="_on_column_button_pressed" binds= [2]]
+[connection signal="pressed" from="BettingBoard/OutsideBets/Row3/Col3" to="." method="_on_column_button_pressed" binds= [3]]
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

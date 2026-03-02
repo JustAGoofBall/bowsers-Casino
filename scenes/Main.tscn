@@ -1,3 +1,481 @@
 [gd_scene format=3 uid="uid://drutkkg7auu6m"]
 
-[node name="Main" type="Node2D" unique_id=513256296]
+[ext_resource type="Script" uid="uid://dbetqnvhg1jvj" path="res://scripts/GameManager.gd" id="1_a2k3v"]
+[ext_resource type="Texture2D" path="res://assets/blackjack/LuigiCasinoBg.png" id="1_bg"]
+[ext_resource type="Script" uid="uid://d3u6qvpwe758w" path="res://scripts/Deck.gd" id="2_b4m5n"]
+[ext_resource type="Texture2D" uid="uid://dqy2ln8mluqvk" path="res://assets/blackjack/BarTable.png" id="2_bartable"]
+[ext_resource type="Texture2D" uid="uid://7srvflv6n36q" path="res://assets/bowser/BowserDefault.png" id="3_bowser_default"]
+[ext_resource type="PackedScene" uid="uid://dscra21hoi4bd" path="res://scenes/PlayerHand.tscn" id="3_c5n6p"]
+[ext_resource type="PackedScene" uid="uid://k5dwnfoxdnc8" path="res://scenes/DealerHand.tscn" id="4_d6p7q"]
+[ext_resource type="Script" uid="uid://bbyohm1ccel06" path="res://scripts/UIController.gd" id="5_e7q8r"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_deal_normal"]
+bg_color = Color(0.2, 0.6, 0.2, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.1, 0.3, 0.1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_deal_hover"]
+bg_color = Color(0.3, 0.7, 0.3, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.8, 0.9, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_deal_pressed"]
+bg_color = Color(0.15, 0.4, 0.15, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.1, 0.3, 0.1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hit_normal"]
+bg_color = Color(0.2, 0.5, 0.8, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.1, 0.3, 0.5, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hit_hover"]
+bg_color = Color(0.3, 0.6, 0.9, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.5, 0.9, 0.5, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hit_pressed"]
+bg_color = Color(0.15, 0.35, 0.6, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.1, 0.3, 0.5, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stand_normal"]
+bg_color = Color(0.8, 0.3, 0.2, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.5, 0.2, 0.1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stand_hover"]
+bg_color = Color(0.9, 0.4, 0.3, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.5, 0.5, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stand_pressed"]
+bg_color = Color(0.6, 0.2, 0.15, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.5, 0.2, 0.1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_newround_normal"]
+bg_color = Color(0.7, 0.5, 0.1, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.4, 0.3, 0.05, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_newround_hover"]
+bg_color = Color(0.9, 0.7, 0.2, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 0.3, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_newround_pressed"]
+bg_color = Color(0.5, 0.35, 0.08, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.4, 0.3, 0.05, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_back_normal"]
+bg_color = Color(0.3, 0.3, 0.3, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.15, 0.15, 0.15, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_back_hover"]
+bg_color = Color(0.5, 0.3, 0.3, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8, 0.4, 0.4, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_back_pressed"]
+bg_color = Color(0.2, 0.2, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.15, 0.15, 0.15, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="Main" type="Node2D" unique_id=1675205104]
+
+[node name="Background" type="Sprite2D" parent="." unique_id=1285677944]
+position = Vector2(576, 194)
+scale = Vector2(3, 3)
+texture = ExtResource("1_bg")
+
+[node name="Bowser" type="Sprite2D" parent="." unique_id=1360748340]
+z_index = 1
+texture_filter = 1
+position = Vector2(576, 240)
+scale = Vector2(0.7, 0.85)
+texture = ExtResource("3_bowser_default")
+
+[node name="BowserFlameEffect" type="Sprite2D" parent="." unique_id=2070344429]
+visible = false
+z_index = 1
+texture_filter = 1
+position = Vector2(576, 240)
+scale = Vector2(0.7, 0.85)
+texture = ExtResource("3_bowser_default")
+
+[node name="BarTable" type="Sprite2D" parent="." unique_id=1897247782]
+z_index = 2
+position = Vector2(576, 580)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_bartable")
+
+[node name="GameManager" type="Node" parent="." unique_id=272094580]
+script = ExtResource("1_a2k3v")
+
+[node name="Deck" type="Node" parent="GameManager" unique_id=346134503]
+script = ExtResource("2_b4m5n")
+
+[node name="PlayerHand" parent="GameManager" unique_id=984814383 instance=ExtResource("3_c5n6p")]
+z_index = 3
+position = Vector2(576, 520)
+
+[node name="DealerHand" parent="GameManager" unique_id=417867776 instance=ExtResource("4_d6p7q")]
+z_index = 3
+position = Vector2(576, 360)
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1526819853]
+script = ExtResource("5_e7q8r")
+
+[node name="MoneyBG" type="ColorRect" parent="UI" unique_id=1876993934]
+offset_left = 15.0
+offset_top = 15.0
+offset_right = 230.0
+offset_bottom = 65.0
+color = Color(0, 0, 0, 0.7)
+
+[node name="MoneyLabel" type="Label" parent="UI" unique_id=777547215]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 225.0
+offset_bottom = 60.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 28
+text = "Money: $1000"
+
+[node name="BetBG" type="ColorRect" parent="UI" unique_id=1364337025]
+offset_left = 15.0
+offset_top = 70.0
+offset_right = 200.0
+offset_bottom = 115.0
+color = Color(0, 0, 0, 0.7)
+
+[node name="BetLabel" type="Label" parent="UI" unique_id=238270607]
+offset_left = 20.0
+offset_top = 75.0
+offset_right = 200.0
+offset_bottom = 110.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 24
+text = "Bet: $0"
+
+[node name="PlayerValueBG" type="ColorRect" parent="UI" unique_id=276301602]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = -190.0
+offset_right = 210.0
+offset_bottom = -140.0
+grow_vertical = 0
+color = Color(0, 0, 0, 0.7)
+
+[node name="PlayerValueLabel" type="Label" parent="UI" unique_id=664856644]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -185.0
+offset_right = 205.0
+offset_bottom = -145.0
+grow_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 24
+text = "Your Hand: 0"
+
+[node name="DealerValueBG" type="ColorRect" parent="UI" unique_id=171110057]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -235.0
+offset_top = 15.0
+offset_right = -15.0
+offset_bottom = 65.0
+grow_horizontal = 0
+color = Color(0, 0, 0, 0.7)
+
+[node name="DealerValueLabel" type="Label" parent="UI" unique_id=192244048]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -230.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 60.0
+grow_horizontal = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 24
+text = "Dealer Hand: 0"
+horizontal_alignment = 2
+
+[node name="ResultLabel" type="Label" parent="UI" unique_id=1264340697]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -100.0
+offset_right = 250.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 0.2, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BettingPanel" type="Panel" parent="UI" unique_id=495231783]
+self_modulate = Color(1, 1, 1, 0)
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -190.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/BettingPanel" unique_id=963254499]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="BetSlider" type="HSlider" parent="UI/BettingPanel/VBoxContainer" unique_id=407808409]
+layout_mode = 2
+min_value = 10.0
+max_value = 500.0
+step = 10.0
+value = 50.0
+
+[node name="BetAmountLabel" type="Label" parent="UI/BettingPanel/VBoxContainer" unique_id=1122940457]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Bet Amount: $50"
+horizontal_alignment = 1
+
+[node name="DealButton" type="Button" parent="UI/BettingPanel/VBoxContainer" unique_id=854373965]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 0.7, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_deal_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_deal_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_deal_pressed")
+text = "DEAL"
+
+[node name="GamePanel" type="Panel" parent="UI" unique_id=574142476]
+visible = false
+self_modulate = Color(1, 1, 1, 0)
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -140.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="HBoxContainer" type="VBoxContainer" parent="UI/GamePanel" unique_id=1621155213]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="HitButton" type="Button" parent="UI/GamePanel/HBoxContainer" unique_id=1528685537]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_colors/font_hover_color = Color(0.7, 1, 0.7, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_hit_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hit_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hit_pressed")
+text = "HIT"
+
+[node name="StandButton" type="Button" parent="UI/GamePanel/HBoxContainer" unique_id=523500020]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_colors/font_hover_color = Color(1, 0.7, 0.7, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_stand_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_stand_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_stand_pressed")
+text = "STAND"
+
+[node name="NewRoundButton" type="Button" parent="UI" unique_id=46416762]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = 50.0
+offset_right = 120.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 0.7, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_newround_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_newround_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_newround_pressed")
+text = "NEW ROUND"
+
+[node name="BackButton" type="Button" parent="UI" unique_id=166407230]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -65.0
+offset_right = 170.0
+offset_bottom = -20.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_colors/font_hover_color = Color(1, 0.7, 0.7, 1)
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_back_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_back_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_back_pressed")
+text = "← BACK TO MENU"
