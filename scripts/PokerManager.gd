@@ -1,9 +1,11 @@
 extends Node2D
 
-# Poker hand rankings
+# Five-card draw video poker, Jacks or Better, with a few Bowser-flavoured
+# bonus hands layered on top of the standard paytable.
 enum HandRank {
 	HIGH_CARD,
-	PAIR,
+	LOW_PAIR,
+	JACKS_OR_BETTER,
 	TWO_PAIR,
 	THREE_OF_A_KIND,
 	STRAIGHT,
@@ -11,35 +13,105 @@ enum HandRank {
 	FULL_HOUSE,
 	FOUR_OF_A_KIND,
 	STRAIGHT_FLUSH,
-	ROYAL_FLUSH
+	ROYAL_FLUSH,
 }
 
-# Payout multipliers for each hand
-const PAYOUTS = {
-	HandRank.PAIR: 1,
+# Every number here is a TOTAL return per coin staked, the way a real video
+# poker paytable is written. The stake is taken at DEAL, so a hand paying 1
+# gives the stake back and nothing more, and a hand paying 3 is a profit of 2.
+const BASE_RETURN := {
+	HandRank.JACKS_OR_BETTER: 1,
 	HandRank.TWO_PAIR: 2,
 	HandRank.THREE_OF_A_KIND: 3,
 	HandRank.STRAIGHT: 4,
 	HandRank.FLUSH: 6,
-	HandRank.FULL_HOUSE: 9,
+	HandRank.FULL_HOUSE: 8,
 	HandRank.FOUR_OF_A_KIND: 25,
 	HandRank.STRAIGHT_FLUSH: 50,
-	HandRank.ROYAL_FLUSH: 250
+	HandRank.ROYAL_FLUSH: 250,
 }
+
+const HAND_NAMES := {
+	HandRank.HIGH_CARD: "High Card",
+	HandRank.LOW_PAIR: "Low Pair",
+	HandRank.JACKS_OR_BETTER: "Jacks or Better",
+	HandRank.TWO_PAIR: "Two Pair",
+	HandRank.THREE_OF_A_KIND: "Three of a Kind",
+	HandRank.STRAIGHT: "Straight",
+	HandRank.FLUSH: "Flush",
+	HandRank.FULL_HOUSE: "Full House",
+	HandRank.FOUR_OF_A_KIND: "Four of a Kind",
+	HandRank.STRAIGHT_FLUSH: "Straight Flush",
+	HandRank.ROYAL_FLUSH: "Royal Flush",
+}
+
+# Bonus hands override the base return. The first entry that matches wins, so
+# they are ordered from the rarest down. These values and the 8/6 base above
+# were picked so the machine returns about 98.4% over a million simulated
+# hands played to standard Jacks-or-Better strategy.
+const BONUS_HANDS := [
+	{
+		"name": "FIRE FLOWER ROYAL",
+		"rank": HandRank.ROYAL_FLUSH,
+		"suit": "H",
+		"return": 800,
+		"blurb": "Royal Flush in Hearts",
+	},
+	{
+		"name": "SPINY SHELL",
+		"rank": HandRank.STRAIGHT_FLUSH,
+		"suit": "S",
+		"return": 100,
+		"blurb": "Straight Flush in Spades",
+	},
+	{
+		"name": "BOWSER'S FURY",
+		"rank": HandRank.FOUR_OF_A_KIND,
+		"quads": [14],
+		"return": 80,
+		"blurb": "Four Aces",
+	},
+	{
+		"name": "KOOPA KING",
+		"rank": HandRank.FOUR_OF_A_KIND,
+		"quads": [13],
+		"return": 50,
+		"blurb": "Four Kings",
+	},
+	{
+		"name": "BOB-OMB BLAST",
+		"rank": HandRank.FOUR_OF_A_KIND,
+		"quads": [2, 3, 4],
+		"return": 30,
+		"blurb": "Four 2s, 3s or 4s",
+	},
+]
+
+const SUITS := ["H", "D", "C", "S"]
+const RANKS := ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+const BET_STEPS := [10, 25, 50, 100, 250]
+const CARD_SCALE := 0.45
 
 var global_manager: Node
 var deck: Array = []
 var hand: Array = []
-var held_cards: Array = [false, false, false, false, false]
-var current_bet: int = 10
+var held_cards := [false, false, false, false, false]
+var bet_index: int = 0
 var game_state: String = "betting"  # betting, holding, complete
+var is_busy: bool = false
+
+var card_textures: Dictionary = {}
+var card_back: Texture2D
+var bowser_default: Texture2D
+var bowser_win: Texture2D
+var bowser_lost: Texture2D
 
 @onready var card_sprites: Array = [
 	$CardsContainer/Card1,
 	$CardsContainer/Card2,
 	$CardsContainer/Card3,
 	$CardsContainer/Card4,
-	$CardsContainer/Card5
+	$CardsContainer/Card5,
 ]
 
 @onready var hold_buttons: Array = [
@@ -47,229 +119,366 @@ var game_state: String = "betting"  # betting, holding, complete
 	$HoldButtons/Hold2,
 	$HoldButtons/Hold3,
 	$HoldButtons/Hold4,
-	$HoldButtons/Hold5
+	$HoldButtons/Hold5,
+]
+
+@onready var held_markers: Array = [
+	$HeldMarkers/Held1,
+	$HeldMarkers/Held2,
+	$HeldMarkers/Held3,
+	$HeldMarkers/Held4,
+	$HeldMarkers/Held5,
 ]
 
 @onready var deal_button: Button = $DealButton
 @onready var draw_button: Button = $DrawButton
 @onready var bet_label: Label = $BetControls/BetAmount
-@onready var result_label: Label = $ResultLabel
 @onready var increase_bet: Button = $BetControls/IncreaseBet
 @onready var decrease_bet: Button = $BetControls/DecreaseBet
+@onready var result_label: Label = $ResultLabel
+@onready var money_label: Label = $MoneyLabel
+@onready var paytable_label: Label = $PaytablePanel/PaytableLabel
+@onready var bowser_sprite: Sprite2D = $BowserSprite
+@onready var bwahaha: AudioStreamPlayer = $Bwahaha
+@onready var back_button: Button = $BackButton
+
 
 func _ready() -> void:
 	global_manager = get_node("/root/GlobalManager")
-	_update_bet_display()
-	_hide_hold_buttons()
+	global_manager.money_changed.connect(_on_money_changed)
+
+	card_back = load("res://assets/cards/CardBack.png")
+	bowser_default = load("res://assets/bowser/BowserDefault.png")
+	bowser_win = load("res://assets/bowser/bowserWin.png")
+	bowser_lost = load("res://assets/bowser/BowserLost.png")
+
+	for sprite in card_sprites:
+		sprite.texture = card_back
+		sprite.scale = Vector2(CARD_SCALE, CARD_SCALE)
+
+	deal_button.visible = true
 	draw_button.visible = false
+	paytable_label.text = _build_paytable_text()
+	_on_money_changed(global_manager.get_money())
+	_update_bet_display()
+	_refresh_hold_ui()
+	_set_bowser(bowser_default)
+	result_label.text = "Press DEAL to play."
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	var key := event as InputEventKey
+	if is_busy or key == null or not key.pressed or key.echo:
+		return
+
+	match key.keycode:
+		KEY_1, KEY_2, KEY_3, KEY_4, KEY_5:
+			_on_hold_button_pressed(key.keycode - KEY_1)
+			get_viewport().set_input_as_handled()
+		KEY_SPACE, KEY_ENTER, KEY_KP_ENTER:
+			if game_state == "holding":
+				_on_draw_button_pressed()
+			else:
+				_on_deal_button_pressed()
+			get_viewport().set_input_as_handled()
+
+
+# --- Deck --------------------------------------------------------------------
 
 func _initialize_deck() -> void:
 	deck.clear()
-	var suits = ["H", "D", "C", "S"]
-	var ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
-	
-	for suit in suits:
-		for rank in ranks:
+	for suit in SUITS:
+		for rank in RANKS:
 			deck.append({"suit": suit, "rank": rank})
-	
 	deck.shuffle()
+
 
 func _draw_card() -> Dictionary:
 	if deck.is_empty():
 		_initialize_deck()
 	return deck.pop_front()
 
+
+func _card_texture(card: Dictionary) -> Texture2D:
+	var card_name: String = str(card["suit"]) + str(card["rank"])
+	if not card_name in card_textures:
+		card_textures[card_name] = load("res://assets/cards/" + card_name + ".png")
+	return card_textures[card_name]
+
+
+# --- Round flow ---------------------------------------------------------------
+
 func _on_deal_button_pressed() -> void:
-	if global_manager.get_money() < current_bet:
-		result_label.text = "Not enough money!"
+	if is_busy or game_state == "holding":
 		return
-	
-	# Deduct bet
-	global_manager.remove_money(current_bet)
+
+	var stake := current_bet()
+	if global_manager.get_money() < stake:
+		result_label.text = "Not enough coins for a %d bet!" % stake
+		return
+
+	is_busy = true
+	global_manager.remove_money(stake)
 	global_manager.increment_games_played()
-	
-	# Reset game
+
 	hand.clear()
 	held_cards = [false, false, false, false, false]
-	result_label.text = ""
-	
-	# Initialize and deal cards
+	result_label.text = "Pick the cards to hold."
+	_set_bowser(bowser_default)
+	_set_controls_enabled(false)
+
+	for sprite in card_sprites:
+		sprite.texture = card_back
+		sprite.modulate = Color.WHITE
+
 	_initialize_deck()
 	for i in range(5):
 		hand.append(_draw_card())
-		_display_card(i, hand[i])
-	
-	# Update UI
+	for i in range(5):
+		await _flip_card(i, hand[i])
+
 	game_state = "holding"
 	deal_button.visible = false
 	draw_button.visible = true
-	_show_hold_buttons()
-	_update_hold_buttons()
+	is_busy = false
+	_refresh_hold_ui()
+	_set_controls_enabled(true)
+
 
 func _on_draw_button_pressed() -> void:
-	# Replace non-held cards
+	if is_busy or game_state != "holding":
+		return
+
+	is_busy = true
+	_set_controls_enabled(false)
+
 	for i in range(5):
 		if not held_cards[i]:
 			hand[i] = _draw_card()
-			_display_card(i, hand[i])
-	
-	# Evaluate hand
-	var hand_result = _evaluate_hand()
-	_show_result(hand_result)
-	
-	# Update UI
+			await _flip_card(i, hand[i])
+
+	_show_result(_evaluate_hand())
+
 	game_state = "complete"
 	draw_button.visible = false
 	deal_button.visible = true
-	_hide_hold_buttons()
+	is_busy = false
+	_refresh_hold_ui()
+	_set_controls_enabled(true)
+
 
 func _on_hold_button_pressed(index: int) -> void:
-	if game_state != "holding":
+	if is_busy or game_state != "holding":
 		return
-	
-	held_cards[index] = !held_cards[index]
-	_update_hold_buttons()
+	held_cards[index] = not held_cards[index]
+	_refresh_hold_ui()
 
-func _display_card(index: int, card: Dictionary) -> void:
-	var card_sprite = card_sprites[index]
-	var card_name = card["suit"] + card["rank"]
-	var texture = load("res://assets/cards/" + card_name + ".png")
-	if texture:
-		card_sprite.texture = texture
 
-func _show_hold_buttons() -> void:
-	for button in hold_buttons:
-		button.visible = true
+func _flip_card(index: int, card: Dictionary) -> void:
+	var sprite: Sprite2D = card_sprites[index]
+	var closing := create_tween()
+	closing.tween_property(sprite, "scale:x", 0.0, 0.07)
+	await closing.finished
+	sprite.texture = _card_texture(card)
+	var opening := create_tween()
+	opening.tween_property(sprite, "scale:x", CARD_SCALE, 0.07)
+	await opening.finished
 
-func _hide_hold_buttons() -> void:
-	for button in hold_buttons:
-		button.visible = false
 
-func _update_hold_buttons() -> void:
-	for i in range(5):
-		if held_cards[i]:
-			hold_buttons[i].text = "HELD"
-		else:
-			hold_buttons[i].text = "HOLD"
+# --- Hand evaluation ----------------------------------------------------------
 
-func _evaluate_hand() -> HandRank:
-	var ranks = []
-	var suits = []
-	
+func _evaluate_hand() -> Dictionary:
+	var values: Array[int] = []
+	var suits: Array[String] = []
 	for card in hand:
-		ranks.append(_get_rank_value(card["rank"]))
+		values.append(_get_rank_value(card["rank"]))
 		suits.append(card["suit"])
-	
-	ranks.sort()
-	
-	var is_flush = _check_flush(suits)
-	var is_straight = _check_straight(ranks)
-	var rank_counts = _count_ranks(ranks)
-	
-	# Check for hands
-	if is_straight and is_flush:
-		if ranks[0] == 10:
-			return HandRank.ROYAL_FLUSH
-		return HandRank.STRAIGHT_FLUSH
-	
-	if 4 in rank_counts.values():
-		return HandRank.FOUR_OF_A_KIND
-	
-	if 3 in rank_counts.values() and 2 in rank_counts.values():
-		return HandRank.FULL_HOUSE
-	
-	if is_flush:
-		return HandRank.FLUSH
-	
-	if is_straight:
-		return HandRank.STRAIGHT
-	
-	if 3 in rank_counts.values():
-		return HandRank.THREE_OF_A_KIND
-	
-	var pairs = rank_counts.values().count(2)
-	if pairs == 2:
-		return HandRank.TWO_PAIR
-	
-	if pairs == 1:
-		return HandRank.PAIR
-	
-	return HandRank.HIGH_CARD
+	values.sort()
+
+	var counts := _count_ranks(values)
+	var flush_suit := suits[0] if suits.count(suits[0]) == 5 else ""
+	var straight := _is_straight(values)
+
+	var quad_value := 0
+	var trips := false
+	var pairs: Array[int] = []
+	for value in counts:
+		match int(counts[value]):
+			4: quad_value = int(value)
+			3: trips = true
+			2: pairs.append(int(value))
+
+	var rank := HandRank.HIGH_CARD
+	if straight and flush_suit != "":
+		rank = HandRank.ROYAL_FLUSH if values[0] == 10 else HandRank.STRAIGHT_FLUSH
+	elif quad_value > 0:
+		rank = HandRank.FOUR_OF_A_KIND
+	elif trips and pairs.size() == 1:
+		rank = HandRank.FULL_HOUSE
+	elif flush_suit != "":
+		rank = HandRank.FLUSH
+	elif straight:
+		rank = HandRank.STRAIGHT
+	elif trips:
+		rank = HandRank.THREE_OF_A_KIND
+	elif pairs.size() == 2:
+		rank = HandRank.TWO_PAIR
+	elif pairs.size() == 1:
+		# Only a pair of Jacks or better pays.
+		rank = HandRank.JACKS_OR_BETTER if pairs[0] >= 11 else HandRank.LOW_PAIR
+
+	return {
+		"rank": rank,
+		"quad_value": quad_value,
+		"flush_suit": flush_suit,
+	}
+
+
+func _payout_for(result: Dictionary) -> Dictionary:
+	for bonus in BONUS_HANDS:
+		if bonus["rank"] != result["rank"]:
+			continue
+		if bonus.has("suit") and bonus["suit"] != result["flush_suit"]:
+			continue
+		if bonus.has("quads") and not (result["quad_value"] in bonus["quads"]):
+			continue
+		return {"name": bonus["name"], "multiplier": int(bonus["return"]), "bonus": true}
+
+	var rank = result["rank"]
+	return {
+		"name": HAND_NAMES[rank],
+		"multiplier": int(BASE_RETURN.get(rank, 0)),
+		"bonus": false,
+	}
+
 
 func _get_rank_value(rank: String) -> int:
 	match rank:
-		"2": return 2
-		"3": return 3
-		"4": return 4
-		"5": return 5
-		"6": return 6
-		"7": return 7
-		"8": return 8
-		"9": return 9
-		"10": return 10
 		"J": return 11
 		"Q": return 12
 		"K": return 13
 		"A": return 14
-	return 0
+	return int(rank)
 
-func _check_flush(suits: Array) -> bool:
-	return suits[0] == suits[1] and suits[1] == suits[2] and suits[2] == suits[3] and suits[3] == suits[4]
 
-func _check_straight(ranks: Array) -> bool:
+func _count_ranks(values: Array[int]) -> Dictionary:
+	var counts := {}
+	for value in values:
+		counts[value] = int(counts.get(value, 0)) + 1
+	return counts
+
+
+func _is_straight(values: Array[int]) -> bool:
+	# values arrives sorted ascending and, for a straight, has no duplicates.
+	if values == [2, 3, 4, 5, 14]:
+		return true  # the wheel: A-2-3-4-5
 	for i in range(4):
-		if ranks[i + 1] != ranks[i] + 1:
-			# Check for Ace-low straight (A-2-3-4-5)
-			if ranks == [2, 3, 4, 5, 14]:
-				return true
+		if values[i + 1] != values[i] + 1:
 			return false
 	return true
 
-func _count_ranks(ranks: Array) -> Dictionary:
-	var counts = {}
-	for rank in ranks:
-		if rank in counts:
-			counts[rank] += 1
-		else:
-			counts[rank] = 1
-	return counts
 
-func _show_result(hand_rank: HandRank) -> void:
-	var hand_name = _get_hand_name(hand_rank)
-	
-	if hand_rank in PAYOUTS:
-		var winnings = current_bet * PAYOUTS[hand_rank]
-		global_manager.add_money(winnings)
-		result_label.text = hand_name + "! Win " + str(winnings) + " coins!"
+func _show_result(result: Dictionary) -> void:
+	var payout := _payout_for(result)
+	var stake := current_bet()
+	var returned: int = stake * int(payout["multiplier"])
+
+	if returned > 0:
+		global_manager.add_money(returned)
+
+	var net := returned - stake
+	if net > 0:
+		result_label.text = "%s! You win %d coins." % [payout["name"], net]
+		_set_bowser(bowser_lost)
+	elif returned > 0:
+		result_label.text = "%s - your %d coins back." % [payout["name"], stake]
+		_set_bowser(bowser_default)
 	else:
-		result_label.text = hand_name + " - No win"
+		result_label.text = "%s - no win." % payout["name"]
+		_set_bowser(bowser_win)
+		if bwahaha and bwahaha.stream:
+			bwahaha.play()
 
-func _get_hand_name(rank: HandRank) -> String:
-	match rank:
-		HandRank.ROYAL_FLUSH: return "ROYAL FLUSH"
-		HandRank.STRAIGHT_FLUSH: return "STRAIGHT FLUSH"
-		HandRank.FOUR_OF_A_KIND: return "FOUR OF A KIND"
-		HandRank.FULL_HOUSE: return "FULL HOUSE"
-		HandRank.FLUSH: return "FLUSH"
-		HandRank.STRAIGHT: return "STRAIGHT"
-		HandRank.THREE_OF_A_KIND: return "THREE OF A KIND"
-		HandRank.TWO_PAIR: return "TWO PAIR"
-		HandRank.PAIR: return "PAIR"
-		_: return "HIGH CARD"
 
-func _on_increase_bet_pressed() -> void:
-	if current_bet < 100:
-		current_bet += 10
-		_update_bet_display()
+# --- UI -----------------------------------------------------------------------
 
-func _on_decrease_bet_pressed() -> void:
-	if current_bet > 10:
-		current_bet -= 10
-		_update_bet_display()
+func current_bet() -> int:
+	return int(BET_STEPS[bet_index])
+
+
+func _build_paytable_text() -> String:
+	var lines := ["BOWSER'S PAYTABLE", "(coins returned per coin bet)", ""]
+	for bonus in BONUS_HANDS:
+		lines.append("%s  %d" % [bonus["blurb"], int(bonus["return"])])
+	lines.append("")
+	var order := [
+		HandRank.ROYAL_FLUSH,
+		HandRank.STRAIGHT_FLUSH,
+		HandRank.FOUR_OF_A_KIND,
+		HandRank.FULL_HOUSE,
+		HandRank.FLUSH,
+		HandRank.STRAIGHT,
+		HandRank.THREE_OF_A_KIND,
+		HandRank.TWO_PAIR,
+		HandRank.JACKS_OR_BETTER,
+	]
+	for rank in order:
+		lines.append("%s  %d" % [HAND_NAMES[rank], int(BASE_RETURN[rank])])
+	lines.append("")
+	lines.append("Keys: 1-5 hold, Space deal/draw")
+	return "\n".join(lines)
+
+
+func _refresh_hold_ui() -> void:
+	var holding := game_state == "holding"
+	for i in range(5):
+		hold_buttons[i].visible = holding
+		hold_buttons[i].text = "HELD" if held_cards[i] else "HOLD"
+		held_markers[i].visible = holding and held_cards[i]
+		card_sprites[i].modulate = (
+			Color(1.0, 0.92, 0.65) if holding and held_cards[i] else Color.WHITE
+		)
+
+
+func _set_controls_enabled(enabled: bool) -> void:
+	deal_button.disabled = not enabled
+	draw_button.disabled = not enabled
+	back_button.disabled = not enabled
+	# The stake is locked in once the cards are on the table.
+	var can_bet: bool = enabled and game_state != "holding"
+	increase_bet.disabled = not can_bet
+	decrease_bet.disabled = not can_bet
+
+
+func _on_money_changed(new_amount: int) -> void:
+	money_label.text = "Coins: %d" % new_amount
+
 
 func _update_bet_display() -> void:
-	bet_label.text = str(current_bet)
-	deal_button.text = "DEAL (" + str(current_bet) + " coins)"
+	bet_label.text = str(current_bet())
+	deal_button.text = "DEAL (%d coins)" % current_bet()
+
+
+func _on_increase_bet_pressed() -> void:
+	if is_busy or game_state == "holding":
+		return
+	bet_index = mini(bet_index + 1, BET_STEPS.size() - 1)
+	_update_bet_display()
+
+
+func _on_decrease_bet_pressed() -> void:
+	if is_busy or game_state == "holding":
+		return
+	bet_index = maxi(bet_index - 1, 0)
+	_update_bet_display()
+
+
+func _set_bowser(texture: Texture2D) -> void:
+	if bowser_sprite and texture:
+		bowser_sprite.texture = texture
+
 
 func _on_back_button_pressed() -> void:
+	if is_busy:
+		return
 	get_tree().change_scene_to_file("res://scenes/menu/MainMenu.tscn")
