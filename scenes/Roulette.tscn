@@ -1,12 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://roulette_scene"]
+[gd_scene load_steps=9 format=3 uid="uid://roulette_scene"]
 
 [ext_resource type="Script" path="res://scripts/RouletteManager.gd" id="1_roulette_script"]
 [ext_resource type="Texture2D" uid="uid://bw4ve0e5lcyvk" path="res://assets/BowserCasino.png" id="2_bg"]
-[ext_resource type="Texture2D" path="res://assets/roulette/SpikeBall.png" id="3_ball"]
-[ext_resource type="Texture2D" path="res://assets/roulette/RedStarChip.png" id="4_red_chip"]
-[ext_resource type="Texture2D" path="res://assets/roulette/BlueStarChip.png" id="5_blue_chip"]
+[ext_resource type="Texture2D" path="res://assets/roulette/RouletteBall.svg" id="3_ball"]
+[ext_resource type="Texture2D" path="res://assets/roulette/RouletteFelt.svg" id="4_felt"]
+[ext_resource type="Texture2D" path="res://assets/roulette/WheelMarker.svg" id="5_marker"]
 [ext_resource type="Texture2D" path="res://assets/bowser/BowserDefault.png" id="6_bowser"]
 [ext_resource type="Texture2D" uid="uid://dabxtow6c1hgh" path="res://assets/roulette/roulette-wheel.png" id="7_wheel"]
+[ext_resource type="AudioStream" path="res://assets/sounds/Bwahaha.wav" id="8_bwahaha"]
 
 [node name="Roulette" type="Node2D"]
 script = ExtResource("1_roulette_script")
@@ -17,10 +18,10 @@ scale = Vector2(1.5, 1.5)
 texture = ExtResource("2_bg")
 
 [node name="TitleLabel" type="Label" parent="."]
-offset_left = 350.0
+offset_left = 220.0
 offset_top = 10.0
-offset_right = 800.0
-offset_bottom = 50.0
+offset_right = 730.0
+offset_bottom = 48.0
 theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
@@ -28,16 +29,53 @@ theme_override_font_sizes/font_size = 28
 text = "BOWSER'S ROULETTE"
 horizontal_alignment = 1
 
+[node name="MoneyLabel" type="Label" parent="."]
+offset_left = 14.0
+offset_top = 14.0
+offset_right = 206.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 24
+text = "Coins: 1000"
+horizontal_alignment = 1
+
+[node name="HistoryStrip" type="Control" parent="."]
+offset_left = 220.0
+offset_top = 50.0
+offset_right = 730.0
+offset_bottom = 88.0
+
+[node name="HistoryTitle" type="Label" parent="HistoryStrip"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 6.0
+offset_right = 84.0
+offset_bottom = 32.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 16
+text = "Recent:"
+
+[node name="HistoryBox" type="HBoxContainer" parent="HistoryStrip"]
+layout_mode = 0
+offset_left = 88.0
+offset_top = 3.0
+offset_right = 510.0
+offset_bottom = 35.0
+theme_override_constants/separation = 4
+
 [node name="BowserSprite" type="Sprite2D" parent="."]
-position = Vector2(180, 320)
-scale = Vector2(0.5, 0.5)
+position = Vector2(110, 320)
+scale = Vector2(0.3, 0.3)
 texture = ExtResource("6_bowser")
 
 [node name="WheelArea" type="ColorRect" parent="."]
-offset_left = 750.0
-offset_top = 80.0
-offset_right = 1010.0
-offset_bottom = 340.0
+offset_left = 810.0
+offset_top = 122.0
+offset_right = 1070.0
+offset_bottom = 382.0
 color = Color(0.08, 0.04, 0.01, 0)
 
 [node name="Wheel" type="Node2D" parent="WheelArea"]
@@ -48,15 +86,19 @@ scale = Vector2(0.8, 0.8)
 texture = ExtResource("7_wheel")
 
 [node name="Ball" type="Sprite2D" parent="WheelArea/Wheel"]
-position = Vector2(0, -120)
-scale = Vector2(0.04, 0.04)
+position = Vector2(0, -156)
+scale = Vector2(0.25, 0.25)
 texture = ExtResource("3_ball")
+
+[node name="WheelMarker" type="Sprite2D" parent="WheelArea"]
+position = Vector2(130, -86)
+texture = ExtResource("5_marker")
 
 [node name="ResultLabel" type="Label" parent="."]
 offset_left = 750.0
-offset_top = 350.0
-offset_right = 1010.0
-offset_bottom = 385.0
+offset_top = 444.0
+offset_right = 1140.0
+offset_bottom = 478.0
 theme_override_colors/font_color = Color(1, 1, 0.3, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
@@ -66,73 +108,63 @@ horizontal_alignment = 1
 
 [node name="TotalBetLabel" type="Label" parent="."]
 offset_left = 750.0
-offset_top = 385.0
-offset_right = 1010.0
-offset_bottom = 415.0
+offset_top = 480.0
+offset_right = 1140.0
+offset_bottom = 504.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 18
 text = "Total Bet: 0 coins"
 horizontal_alignment = 1
 
-[node name="BetControls" type="HBoxContainer" parent="."]
-offset_left = 750.0
-offset_top = 420.0
-offset_right = 1010.0
-offset_bottom = 455.0
-theme_override_constants/separation = 15
+[node name="ChipRack" type="HBoxContainer" parent="."]
+offset_left = 800.0
+offset_top = 508.0
+offset_right = 1090.0
+offset_bottom = 566.0
+theme_override_constants/separation = 12
 alignment = 1
 
-[node name="BetLabel" type="Label" parent="BetControls"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Bet:"
-
-[node name="DecreaseBet" type="Button" parent="BetControls"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "-"
-
-[node name="BetAmount" type="Label" parent="BetControls"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "10"
-
-[node name="IncreaseBet" type="Button" parent="BetControls"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
-text = "+"
-
 [node name="SpinButton" type="Button" parent="."]
-offset_left = 770.0
-offset_top = 465.0
-offset_right = 990.0
-offset_bottom = 510.0
-theme_override_font_sizes/font_size = 26
+offset_left = 790.0
+offset_top = 572.0
+offset_right = 1100.0
+offset_bottom = 612.0
+theme_override_font_sizes/font_size = 24
 text = "SPIN!"
 
 [node name="ClearBetsButton" type="Button" parent="."]
-offset_left = 770.0
-offset_top = 520.0
-offset_right = 990.0
-offset_bottom = 555.0
-theme_override_font_sizes/font_size = 16
+offset_left = 790.0
+offset_top = 616.0
+offset_right = 940.0
+offset_bottom = 642.0
+theme_override_font_sizes/font_size = 15
 text = "Clear Bets"
+
+[node name="RebetButton" type="Button" parent="."]
+offset_left = 950.0
+offset_top = 616.0
+offset_right = 1100.0
+offset_bottom = 642.0
+theme_override_font_sizes/font_size = 15
+text = "Repeat Bet"
 
 [node name="BettingBoard" type="ColorRect" parent="."]
 offset_left = 220.0
-offset_top = 70.0
+offset_top = 92.0
 offset_right = 730.0
-offset_bottom = 580.0
+offset_bottom = 602.0
 color = Color(0.12, 0.08, 0.02, 1)
 
-[node name="BoardFrame" type="ColorRect" parent="BettingBoard"]
+[node name="BoardFelt" type="TextureRect" parent="BettingBoard"]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 502.0
-offset_bottom = 502.0
-color = Color(0.06, 0.45, 0.1, 1)
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 510.0
+offset_bottom = 510.0
+mouse_filter = 2
+texture = ExtResource("4_felt")
+expand_mode = 1
 
 [node name="ZeroBox" type="ColorRect" parent="BettingBoard"]
 layout_mode = 0
@@ -147,24 +179,12 @@ layout_mode = 0
 offset_left = 5.0
 offset_top = 5.0
 offset_right = 65.0
-offset_bottom = 120.0
-theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+offset_bottom = 245.0
+theme_override_colors/font_color = Color(0.7, 1, 0.7, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 42
 text = "0"
-
-[node name="DoubleZeroButton" type="Button" parent="BettingBoard/ZeroBox"]
-layout_mode = 0
-offset_left = 5.0
-offset_top = 130.0
-offset_right = 65.0
-offset_bottom = 245.0
-theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 42
-text = "00"
 
 [node name="NumberGrid" type="GridContainer" parent="BettingBoard"]
 layout_mode = 0
@@ -618,7 +638,7 @@ theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 15
-text = "Column 1 (3-36)"
+text = "Column 1 (1-34)"
 
 [node name="Col2" type="Button" parent="BettingBoard/OutsideBets/Row3"]
 custom_minimum_size = Vector2(0, 48)
@@ -638,7 +658,7 @@ theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 15
-text = "Column 3 (1-34)"
+text = "Column 3 (3-36)"
 
 [node name="BackButton" type="Button" parent="."]
 offset_left = 20.0
@@ -648,10 +668,14 @@ offset_bottom = 630.0
 theme_override_font_sizes/font_size = 18
 text = "< Back"
 
-[connection signal="pressed" from="BetControls/DecreaseBet" to="." method="_on_decrease_bet_pressed"]
-[connection signal="pressed" from="BetControls/IncreaseBet" to="." method="_on_increase_bet_pressed"]
+[node name="BetMarkers" type="Node2D" parent="."]
+
+[node name="Bwahaha" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_bwahaha")
+
 [connection signal="pressed" from="SpinButton" to="." method="_on_spin_button_pressed"]
 [connection signal="pressed" from="ClearBetsButton" to="." method="_on_clear_bets_pressed"]
+[connection signal="pressed" from="RebetButton" to="." method="_on_rebet_pressed"]
 [connection signal="pressed" from="BettingBoard/ZeroBox/ZeroButton" to="." method="_on_number_button_pressed" binds= [0]]
 [connection signal="pressed" from="BettingBoard/NumberGrid/Num3" to="." method="_on_number_button_pressed" binds= [3]]
 [connection signal="pressed" from="BettingBoard/NumberGrid/Num6" to="." method="_on_number_button_pressed" binds= [6]]
@@ -689,7 +713,6 @@ text = "< Back"
 [connection signal="pressed" from="BettingBoard/NumberGrid/Num28" to="." method="_on_number_button_pressed" binds= [28]]
 [connection signal="pressed" from="BettingBoard/NumberGrid/Num31" to="." method="_on_number_button_pressed" binds= [31]]
 [connection signal="pressed" from="BettingBoard/NumberGrid/Num34" to="." method="_on_number_button_pressed" binds= [34]]
-[connection signal="pressed" from="BettingBoard/ZeroBox/DoubleZeroButton" to="." method="_on_double_zero_button_pressed"]
 [connection signal="pressed" from="BettingBoard/OutsideBets/Row1/Low" to="." method="_on_low_button_pressed"]
 [connection signal="pressed" from="BettingBoard/OutsideBets/Row1/Even" to="." method="_on_even_button_pressed"]
 [connection signal="pressed" from="BettingBoard/OutsideBets/Row1/RedBet" to="." method="_on_red_button_pressed"]
