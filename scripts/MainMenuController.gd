@@ -2,10 +2,18 @@ extends CanvasLayer
 
 @onready var money_label = $MoneyLabel
 @onready var stats_label = $StatsLabel
-@onready var blackjack_button = $GameButtons/BlackjackButton
-@onready var slots_button = $GameButtons/SlotsButton
-@onready var poker_button = $GameButtons/PokerButton
-@onready var roulette_button = $GameButtons/RouletteButton
+# Each button just needs the scene it opens, so the list is the whole wiring.
+const GAMES := [
+	["BlackjackButton", "res://scenes/Main.tscn"],
+	["SlotsButton", "res://scenes/Slots.tscn"],
+	["PokerButton", "res://scenes/Poker.tscn"],
+	["RouletteButton", "res://scenes/Roulette.tscn"],
+	["HiLoButton", "res://scenes/HiLo.tscn"],
+	["PlinkoButton", "res://scenes/Plinko.tscn"],
+	["CrapsButton", "res://scenes/Craps.tscn"],
+]
+
+@onready var game_buttons = $GameButtons
 
 var global_manager: Node
 
@@ -15,10 +23,12 @@ func _ready() -> void:
 	
 	# Connect signals
 	global_manager.money_changed.connect(_on_money_changed)
-	blackjack_button.pressed.connect(_on_blackjack_pressed)
-	slots_button.pressed.connect(_on_slots_pressed)
-	poker_button.pressed.connect(_on_poker_pressed)
-	roulette_button.pressed.connect(_on_roulette_pressed)
+	for entry in GAMES:
+		var button := game_buttons.get_node_or_null(String(entry[0])) as Button
+		if button:
+			button.pressed.connect(_open_game.bind(String(entry[1])))
+		else:
+			push_warning("MainMenu: no button named %s" % entry[0])
 	
 	# Update displays
 	_update_money_display()
@@ -36,14 +46,5 @@ func _update_stats_display() -> void:
 func _on_money_changed(_new_amount: int) -> void:
 	_update_money_display()
 
-func _on_blackjack_pressed() -> void:
-	global_manager.change_scene("res://scenes/Main.tscn")
-
-func _on_slots_pressed() -> void:
-	global_manager.change_scene("res://scenes/Slots.tscn")
-
-func _on_poker_pressed() -> void:
-	global_manager.change_scene("res://scenes/Poker.tscn")
-
-func _on_roulette_pressed() -> void:
-	global_manager.change_scene("res://scenes/Roulette.tscn")
+func _open_game(scene_path: String) -> void:
+	global_manager.change_scene(scene_path)
