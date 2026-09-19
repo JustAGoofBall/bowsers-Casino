@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://roulette_scene"]
+[gd_scene load_steps=13 format=3 uid="uid://roulette_scene"]
 
 [ext_resource type="Script" path="res://scripts/RouletteManager.gd" id="1_roulette_script"]
 [ext_resource type="Texture2D" uid="uid://bw4ve0e5lcyvk" path="res://assets/BowserCasino.png" id="2_bg"]
@@ -8,6 +8,10 @@
 [ext_resource type="Texture2D" path="res://assets/bowser/BowserDefault.png" id="6_bowser"]
 [ext_resource type="Texture2D" uid="uid://dabxtow6c1hgh" path="res://assets/roulette/roulette-wheel.png" id="7_wheel"]
 [ext_resource type="AudioStream" path="res://assets/sounds/Bwahaha.wav" id="8_bwahaha"]
+[ext_resource type="AudioStream" path="res://assets/sounds/BallRoll.wav" id="9_ballroll"]
+[ext_resource type="AudioStream" path="res://assets/sounds/BallDrop.wav" id="10_balldrop"]
+[ext_resource type="AudioStream" path="res://assets/sounds/ChipPlace.wav" id="11_chipplace"]
+[ext_resource type="AudioStream" path="res://assets/sounds/Win.wav" id="12_winchime"]
 
 [node name="Roulette" type="Node2D"]
 script = ExtResource("1_roulette_script")
@@ -672,6 +676,22 @@ text = "< Back"
 
 [node name="Bwahaha" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_bwahaha")
+
+[node name="BallRoll" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_ballroll")
+volume_db = -6.0
+
+[node name="BallDrop" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_balldrop")
+volume_db = 0.0
+
+[node name="ChipPlace" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("11_chipplace")
+volume_db = -3.0
+
+[node name="WinChime" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("12_winchime")
+volume_db = -2.0
 
 [connection signal="pressed" from="SpinButton" to="." method="_on_spin_button_pressed"]
 [connection signal="pressed" from="ClearBetsButton" to="." method="_on_clear_bets_pressed"]

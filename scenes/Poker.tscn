@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://poker_scene"]
+[gd_scene load_steps=10 format=3 uid="uid://poker_scene"]
 
 [ext_resource type="Script" path="res://scripts/PokerManager.gd" id="1_poker_script"]
 [ext_resource type="Texture2D" path="res://assets/poker/PokerFelt.svg" id="2_felt"]
@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" path="res://assets/poker/HeldMarker.svg" id="4_held"]
 [ext_resource type="Texture2D" path="res://assets/bowser/BowserDefault.png" id="5_bowser"]
 [ext_resource type="AudioStream" path="res://assets/sounds/Bwahaha.wav" id="6_bwahaha"]
+[ext_resource type="AudioStream" path="res://assets/sounds/CardFlip.wav" id="7_cardflip"]
+[ext_resource type="AudioStream" path="res://assets/sounds/Win.wav" id="8_winchime"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_paytable"]
 bg_color = Color(0.05, 0.04, 0.02, 0.72)
@@ -313,6 +315,14 @@ text = "< Back"
 
 [node name="Bwahaha" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_bwahaha")
+
+[node name="CardFlip" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_cardflip")
+volume_db = -2.0
+
+[node name="WinChime" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_winchime")
+volume_db = -2.0
 
 [connection signal="pressed" from="HoldButtons/Hold1" to="." method="_on_hold_button_pressed" binds= [0]]
 [connection signal="pressed" from="HoldButtons/Hold2" to="." method="_on_hold_button_pressed" binds= [1]]

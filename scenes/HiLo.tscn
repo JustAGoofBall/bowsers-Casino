@@ -1,0 +1,233 @@
+[gd_scene load_steps=8 format=3 uid="uid://hilo_scene"]
+
+[ext_resource type="Script" path="res://scripts/HiLoManager.gd" id="1_hilo_script"]
+[ext_resource type="Texture2D" path="res://assets/poker/PokerFelt.svg" id="2_felt"]
+[ext_resource type="Texture2D" path="res://assets/cards/CardBack.png" id="3_back"]
+[ext_resource type="Texture2D" path="res://assets/bowser/BowserDefault.png" id="4_bowser"]
+[ext_resource type="AudioStream" path="res://assets/sounds/CardFlip.wav" id="5_cardflip"]
+[ext_resource type="AudioStream" path="res://assets/sounds/Win.wav" id="6_winchime"]
+[ext_resource type="AudioStream" path="res://assets/sounds/Bwahaha.wav" id="7_bwahaha"]
+
+[node name="HiLo" type="Node2D"]
+script = ExtResource("1_hilo_script")
+
+[node name="Background" type="TextureRect" parent="."]
+offset_right = 1152.0
+offset_bottom = 648.0
+mouse_filter = 2
+texture = ExtResource("2_felt")
+expand_mode = 1
+
+[node name="TitleLabel" type="Label" parent="."]
+offset_left = 230.0
+offset_top = 14.0
+offset_right = 920.0
+offset_bottom = 60.0
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 34
+text = "BOWSER'S HI-LO"
+horizontal_alignment = 1
+
+[node name="MoneyLabel" type="Label" parent="."]
+offset_left = 14.0
+offset_top = 14.0
+offset_right = 206.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 24
+text = "Coins: 1000"
+horizontal_alignment = 1
+
+[node name="BowserSprite" type="Sprite2D" parent="."]
+position = Vector2(100, 340)
+scale = Vector2(0.26, 0.26)
+texture = ExtResource("4_bowser")
+
+[node name="Cards" type="Node2D" parent="."]
+
+[node name="CurrentCard" type="Sprite2D" parent="Cards"]
+position = Vector2(460, 280)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_back")
+
+[node name="NextCard" type="Sprite2D" parent="Cards"]
+position = Vector2(700, 280)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_back")
+
+[node name="CurrentCaption" type="Label" parent="."]
+offset_left = 380.0
+offset_top = 372.0
+offset_right = 540.0
+offset_bottom = 398.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 16
+text = "SHOWING"
+horizontal_alignment = 1
+
+[node name="NextCaption" type="Label" parent="."]
+offset_left = 620.0
+offset_top = 372.0
+offset_right = 780.0
+offset_bottom = 398.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 16
+text = "NEXT"
+horizontal_alignment = 1
+
+[node name="PotLabel" type="Label" parent="."]
+offset_left = 828.0
+offset_top = 116.0
+offset_right = 1096.0
+offset_bottom = 156.0
+theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+text = "Pot: 0"
+horizontal_alignment = 1
+
+[node name="StreakLabel" type="Label" parent="."]
+offset_left = 828.0
+offset_top = 158.0
+offset_right = 1096.0
+offset_bottom = 188.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 18
+text = "Streak: 0"
+horizontal_alignment = 1
+
+[node name="CallButtons" type="Control" parent="."]
+offset_right = 1152.0
+offset_bottom = 648.0
+mouse_filter = 2
+
+[node name="HigherButton" type="Button" parent="CallButtons"]
+layout_mode = 0
+offset_left = 828.0
+offset_top = 208.0
+offset_right = 1096.0
+offset_bottom = 268.0
+theme_override_font_sizes/font_size = 22
+text = "HIGHER  --"
+
+[node name="LowerButton" type="Button" parent="CallButtons"]
+layout_mode = 0
+offset_left = 828.0
+offset_top = 280.0
+offset_right = 1096.0
+offset_bottom = 340.0
+theme_override_font_sizes/font_size = 22
+text = "LOWER  --"
+
+[node name="DeckLabel" type="Label" parent="."]
+offset_left = 240.0
+offset_top = 404.0
+offset_right = 920.0
+offset_bottom = 430.0
+theme_override_colors/font_color = Color(0.85, 0.92, 0.85, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 15
+text = "Cards left: 51"
+horizontal_alignment = 1
+
+[node name="ResultLabel" type="Label" parent="."]
+offset_left = 230.0
+offset_top = 436.0
+offset_right = 920.0
+offset_bottom = 476.0
+theme_override_colors/font_color = Color(1, 1, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 22
+text = "Set your stake and press START."
+horizontal_alignment = 1
+
+[node name="StakeControls" type="HBoxContainer" parent="."]
+offset_left = 435.0
+offset_top = 486.0
+offset_right = 715.0
+offset_bottom = 522.0
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="StakeLabel" type="Label" parent="StakeControls"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 18
+text = "Stake:"
+
+[node name="DecreaseStake" type="Button" parent="StakeControls"]
+custom_minimum_size = Vector2(44, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "-"
+
+[node name="StakeAmount" type="Label" parent="StakeControls"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 22
+text = "10"
+horizontal_alignment = 1
+
+[node name="IncreaseStake" type="Button" parent="StakeControls"]
+custom_minimum_size = Vector2(44, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "+"
+
+[node name="StartButton" type="Button" parent="."]
+offset_left = 400.0
+offset_top = 532.0
+offset_right = 750.0
+offset_bottom = 582.0
+theme_override_font_sizes/font_size = 24
+text = "START (10 coins)"
+
+[node name="CashOutButton" type="Button" parent="."]
+visible = false
+offset_left = 400.0
+offset_top = 532.0
+offset_right = 750.0
+offset_bottom = 582.0
+theme_override_font_sizes/font_size = 24
+text = "CASH OUT"
+
+[node name="BackButton" type="Button" parent="."]
+offset_left = 20.0
+offset_top = 592.0
+offset_right = 150.0
+offset_bottom = 632.0
+theme_override_font_sizes/font_size = 18
+text = "< Back"
+
+[node name="CardFlip" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_cardflip")
+volume_db = -2.0
+
+[node name="WinChime" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_winchime")
+volume_db = -4.0
+
+[node name="Bwahaha" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_bwahaha")
+
+[connection signal="pressed" from="CallButtons/HigherButton" to="." method="_on_higher_pressed"]
+[connection signal="pressed" from="CallButtons/LowerButton" to="." method="_on_lower_pressed"]
+[connection signal="pressed" from="StartButton" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="CashOutButton" to="." method="_on_cash_out_pressed"]
+[connection signal="pressed" from="StakeControls/DecreaseStake" to="." method="_on_decrease_stake_pressed"]
+[connection signal="pressed" from="StakeControls/IncreaseStake" to="." method="_on_increase_stake_pressed"]
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

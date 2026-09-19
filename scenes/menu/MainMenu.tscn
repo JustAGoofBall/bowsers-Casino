@@ -34,39 +34,63 @@ offset_bottom = 60.0
 theme_override_font_sizes/font_size = 28
 text = "Money: $1000"
 
-[node name="GameButtons" type="VBoxContainer" parent="UI"]
+[node name="GameButtons" type="GridContainer" parent="UI"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -100.0
-offset_right = 150.0
-offset_bottom = 150.0
+offset_left = -330.0
+offset_top = -110.0
+offset_right = 330.0
+offset_bottom = 160.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 20
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 16
+columns = 2
 
 [node name="BlackjackButton" type="Button" parent="UI/GameButtons"]
+custom_minimum_size = Vector2(320, 58)
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 26
 text = "♠ BLACKJACK ♣"
 
 [node name="SlotsButton" type="Button" parent="UI/GameButtons"]
+custom_minimum_size = Vector2(320, 58)
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 26
 text = "🎰 SLOTS"
 
 [node name="PokerButton" type="Button" parent="UI/GameButtons"]
+custom_minimum_size = Vector2(320, 58)
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 26
 text = "♦ POKER ♥"
 
 [node name="RouletteButton" type="Button" parent="UI/GameButtons"]
+custom_minimum_size = Vector2(320, 58)
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 26
 text = "🎡 ROULETTE"
+
+[node name="HiLoButton" type="Button" parent="UI/GameButtons"]
+custom_minimum_size = Vector2(320, 58)
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "HI-LO"
+
+[node name="PlinkoButton" type="Button" parent="UI/GameButtons"]
+custom_minimum_size = Vector2(320, 58)
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "PLINKO"
+
+[node name="CrapsButton" type="Button" parent="UI/GameButtons"]
+custom_minimum_size = Vector2(320, 58)
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "BOB-OMB DICE"
 
 
 [node name="ComingSoonLabel" type="Label" parent="UI"]
@@ -75,14 +99,14 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = 180.0
-offset_right = 200.0
-offset_bottom = 220.0
+offset_left = -260.0
+offset_top = 196.0
+offset_right = 260.0
+offset_bottom = 236.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 18
-text = "More games coming soon!"
+text = "Seven games. The house still has the edge."
 horizontal_alignment = 1
 
 [node name="StatsLabel" type="Label" parent="UI"]

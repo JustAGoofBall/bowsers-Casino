@@ -140,6 +140,8 @@ var bowser_lost: Texture2D
 @onready var paytable_label: Label = $PaytablePanel/PaytableLabel
 @onready var bowser_sprite: Sprite2D = $BowserSprite
 @onready var bwahaha: AudioStreamPlayer = $Bwahaha
+@onready var flip_sound: AudioStreamPlayer = $CardFlip
+@onready var win_sound: AudioStreamPlayer = $WinChime
 @onready var back_button: Button = $BackButton
 
 
@@ -276,6 +278,9 @@ func _on_hold_button_pressed(index: int) -> void:
 
 func _flip_card(index: int, card: Dictionary) -> void:
 	var sprite: Sprite2D = card_sprites[index]
+	# A little pitch variation so five cards in a row do not sound mechanical.
+	flip_sound.pitch_scale = randf_range(0.92, 1.12)
+	_play(flip_sound)
 	var closing := create_tween()
 	closing.tween_property(sprite, "scale:x", 0.0, 0.07)
 	await closing.finished
@@ -390,14 +395,14 @@ func _show_result(result: Dictionary) -> void:
 	if net > 0:
 		result_label.text = "%s! You win %d coins." % [payout["name"], net]
 		_set_bowser(bowser_lost)
+		_play(win_sound)
 	elif returned > 0:
 		result_label.text = "%s - your %d coins back." % [payout["name"], stake]
 		_set_bowser(bowser_default)
 	else:
 		result_label.text = "%s - no win." % payout["name"]
 		_set_bowser(bowser_win)
-		if bwahaha and bwahaha.stream:
-			bwahaha.play()
+		_play(bwahaha)
 
 
 # --- UI -----------------------------------------------------------------------
@@ -471,6 +476,11 @@ func _on_decrease_bet_pressed() -> void:
 		return
 	bet_index = maxi(bet_index - 1, 0)
 	_update_bet_display()
+
+
+func _play(player: AudioStreamPlayer) -> void:
+	if player and player.stream:
+		player.play()
 
 
 func _set_bowser(texture: Texture2D) -> void:

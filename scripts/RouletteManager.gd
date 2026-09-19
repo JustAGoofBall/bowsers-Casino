@@ -35,6 +35,11 @@ const CHIPS := [
 
 const HISTORY_LENGTH := 12
 
+# BallRoll.wav is a steady loop of the ball ticking over the pocket frets;
+# dropping its pitch as the wheel slows stretches those ticks out with it.
+const ROLL_PITCH_FAST := 1.7
+const ROLL_PITCH_SLOW := 0.55
+
 var global_manager: Node
 var current_bets: Dictionary = {}
 var last_bets: Dictionary = {}
@@ -67,6 +72,10 @@ var pip_texture: Texture2D
 @onready var history_box: HBoxContainer = $HistoryStrip/HistoryBox
 @onready var bowser_sprite: Sprite2D = $BowserSprite
 @onready var bwahaha: AudioStreamPlayer = $Bwahaha
+@onready var ball_roll_sound: AudioStreamPlayer = $BallRoll
+@onready var ball_drop_sound: AudioStreamPlayer = $BallDrop
+@onready var chip_sound: AudioStreamPlayer = $ChipPlace
+@onready var win_sound: AudioStreamPlayer = $WinChime
 
 var bowser_default: Texture2D
 var bowser_win: Texture2D
@@ -117,6 +126,9 @@ func _process(delta: float) -> void:
 	var local_angle: float = ball_angle + wobble - wheel.rotation
 	ball.position = Vector2(sin(local_angle) * radius, -cos(local_angle) * radius)
 
+	if ball_roll_sound.playing:
+		ball_roll_sound.pitch_scale = lerpf(ROLL_PITCH_FAST, ROLL_PITCH_SLOW, eased)
+
 
 # --- Betting -----------------------------------------------------------------
 
@@ -140,6 +152,7 @@ func _place_bet(bet_type: String, bet_value) -> void:
 		}
 
 	global_manager.remove_money(bet_amount)
+	_play(chip_sound)
 	_update_total_bet()
 	_refresh_bet_markers()
 	_update_buttons()
@@ -198,7 +211,18 @@ func _on_spin_button_pressed() -> void:
 	spin_duration = randf_range(3.5, 4.5)
 	spin_elapsed = 0.0
 
-	await get_tree().create_timer(spin_duration + 0.6).timeout
+	ball_roll_sound.pitch_scale = ROLL_PITCH_FAST
+	_play(ball_roll_sound)
+
+	# The ball reaches its pocket at spin_duration; the clatter belongs there,
+	# not after the pause that follows it.
+	await get_tree().create_timer(spin_duration).timeout
+	if not is_inside_tree():
+		return
+	ball_roll_sound.stop()
+	_play(ball_drop_sound)
+
+	await get_tree().create_timer(0.6).timeout
 	if not is_inside_tree():
 		return
 
@@ -258,14 +282,14 @@ func _process_results() -> void:
 	if net > 0:
 		result_label.text = "%s - you win %d coins!" % [headline, net]
 		_set_bowser(bowser_lost)
+		_play(win_sound)
 	elif net == 0:
 		result_label.text = "%s - you break even." % headline
 		_set_bowser(bowser_default)
 	else:
 		result_label.text = "%s - you lose %d coins." % [headline, -net]
 		_set_bowser(bowser_win)
-		if bwahaha and bwahaha.stream:
-			bwahaha.play()
+		_play(bwahaha)
 
 	last_bets = _copy_bets(current_bets)
 	_add_history(target_number)
@@ -511,6 +535,11 @@ func _update_buttons() -> void:
 	back_button.disabled = is_spinning
 
 
+func _play(player: AudioStreamPlayer) -> void:
+	if player and player.stream:
+		player.play()
+
+
 func _set_bowser(texture: Texture2D) -> void:
 	if bowser_sprite and texture:
 		bowser_sprite.texture = texture
@@ -554,4 +583,5 @@ func _on_column_button_pressed(column: int) -> void:
 func _on_back_button_pressed() -> void:
 	if is_spinning:
 		return
+	ball_roll_sound.stop()
 	get_tree().change_scene_to_file("res://scenes/menu/MainMenu.tscn")
