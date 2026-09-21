@@ -7,6 +7,7 @@
 script = ExtResource("1_slots_script")
 
 [node name="Background" type="Sprite2D" parent="."]
+texture_filter = 2
 position = Vector2(576, 324)
 scale = Vector2(1.5, 1.5)
 texture = ExtResource("2_bg")
@@ -121,6 +122,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Symbol1" type="Sprite2D" parent="ReelsContainer/Reel1"]
+texture_filter = 2
 position = Vector2(82, 77)
 scale = Vector2(0.35, 0.35)
 centered = true
@@ -130,6 +132,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Symbol2" type="Sprite2D" parent="ReelsContainer/Reel2"]
+texture_filter = 2
 position = Vector2(82, 77)
 scale = Vector2(0.35, 0.35)
 centered = true
@@ -139,6 +142,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Symbol3" type="Sprite2D" parent="ReelsContainer/Reel3"]
+texture_filter = 2
 position = Vector2(82, 77)
 scale = Vector2(0.35, 0.35)
 centered = true

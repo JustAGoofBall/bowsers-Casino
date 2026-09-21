@@ -90,7 +90,7 @@ const BONUS_HANDS := [
 const SUITS := ["H", "D", "C", "S"]
 const RANKS := ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
 const BET_STEPS := [10, 25, 50, 100, 250]
-const CARD_SCALE := 0.45
+const CARD_SCALE := 3.0
 
 var global_manager: Node
 var deck: Array = []
@@ -149,10 +149,10 @@ func _ready() -> void:
 	global_manager = get_node("/root/GlobalManager")
 	global_manager.money_changed.connect(_on_money_changed)
 
-	card_back = load("res://assets/cards/CardBack.png")
-	bowser_default = load("res://assets/bowser/BowserDefault.png")
-	bowser_win = load("res://assets/bowser/bowserWin.png")
-	bowser_lost = load("res://assets/bowser/BowserLost.png")
+	card_back = load("res://assets/pixel/cards/CardBack.png")
+	bowser_default = load("res://assets/pixel/boss/BossDefault.png")
+	bowser_win = load("res://assets/pixel/boss/BossWin.png")
+	bowser_lost = load("res://assets/pixel/boss/BossLost.png")
 
 	for sprite in card_sprites:
 		sprite.texture = card_back
@@ -204,7 +204,7 @@ func _draw_card() -> Dictionary:
 func _card_texture(card: Dictionary) -> Texture2D:
 	var card_name: String = str(card["suit"]) + str(card["rank"])
 	if not card_name in card_textures:
-		card_textures[card_name] = load("res://assets/cards/" + card_name + ".png")
+		card_textures[card_name] = load("res://assets/pixel/cards/" + card_name + ".png")
 	return card_textures[card_name]
 
 

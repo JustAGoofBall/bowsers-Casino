@@ -27,10 +27,10 @@ const BALL_POCKET_RADIUS := 156.0
 # Chip rack. The artwork carries no numerals, so the values live here and the
 # denomination is drawn as a Label on top of the chip.
 const CHIPS := [
-	{"value": 5, "texture": "res://assets/roulette/chips/ChipIvory.svg"},
-	{"value": 25, "texture": "res://assets/roulette/chips/ChipRed.svg"},
-	{"value": 100, "texture": "res://assets/roulette/chips/ChipGreen.svg"},
-	{"value": 500, "texture": "res://assets/roulette/chips/ChipPurple.svg"},
+	{"value": 5, "texture": "res://assets/pixel/chips/ChipIvory.png"},
+	{"value": 25, "texture": "res://assets/pixel/chips/ChipRed.png"},
+	{"value": 100, "texture": "res://assets/pixel/chips/ChipGreen.png"},
+	{"value": 500, "texture": "res://assets/pixel/chips/ChipPurple.png"},
 ]
 
 const HISTORY_LENGTH := 12
@@ -86,10 +86,10 @@ func _ready() -> void:
 	global_manager = get_node("/root/GlobalManager")
 	global_manager.money_changed.connect(_on_money_changed)
 
-	bowser_default = load("res://assets/bowser/BowserDefault.png")
-	bowser_win = load("res://assets/bowser/bowserWin.png")
-	bowser_lost = load("res://assets/bowser/BowserLost.png")
-	pip_texture = load("res://assets/roulette/HistoryPip.svg")
+	bowser_default = load("res://assets/pixel/boss/BossDefault.png")
+	bowser_win = load("res://assets/pixel/boss/BossWin.png")
+	bowser_lost = load("res://assets/pixel/boss/BossLost.png")
+	pip_texture = load("res://assets/pixel/HistoryPip.png")
 	for chip in CHIPS:
 		chip_textures.append(load(chip["texture"]))
 
@@ -367,7 +367,7 @@ func _build_chip_rack() -> void:
 		button.texture_normal = chip_textures[i]
 		button.ignore_texture_size = true
 		button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		button.custom_minimum_size = Vector2(56, 56)
+		button.custom_minimum_size = Vector2(48, 48)
 		button.tooltip_text = "Bet %d per click" % chip["value"]
 		button.pressed.connect(_on_chip_pressed.bind(int(chip["value"])))
 
@@ -459,7 +459,7 @@ func _refresh_bet_markers() -> void:
 		var amount: int = current_bets[bet_key]["amount"]
 		var marker := Sprite2D.new()
 		marker.texture = _chip_texture_for(amount)
-		marker.scale = Vector2(0.19, 0.19)
+		marker.scale = Vector2(2, 2)
 		marker.position = target.get_global_rect().get_center()
 		marker.z_index = 10
 
@@ -492,7 +492,7 @@ func _add_history(number: int) -> void:
 	for n in history:
 		var pip := TextureRect.new()
 		pip.texture = pip_texture
-		pip.custom_minimum_size = Vector2(30, 30)
+		pip.custom_minimum_size = Vector2(32, 32)
 		pip.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		pip.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		# self_modulate tints the pip without also tinting the number on top.

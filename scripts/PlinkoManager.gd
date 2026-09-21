@@ -51,7 +51,7 @@ var peg_texture: Texture2D
 func _ready() -> void:
 	global_manager = get_node("/root/GlobalManager")
 	global_manager.money_changed.connect(_on_money_changed)
-	peg_texture = load("res://assets/plinko/Peg.svg")
+	peg_texture = load("res://assets/pixel/Peg.png")
 
 	_build_pegs()
 	_build_slots()
@@ -86,6 +86,7 @@ func _build_pegs() -> void:
 			var peg := Sprite2D.new()
 			peg.texture = peg_texture
 			peg.position = _peg_position(row, index)
+			peg.scale = Vector2(2, 2)
 			pegs.add_child(peg)
 
 

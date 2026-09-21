@@ -1,5 +1,9 @@
 extends Node
 
+# The boss art is 48x44 pixel art, drawn at an integer scale so it stays
+# crisp. The old renders were 659px wide and used a 0.7/0.85 scale.
+const BOSS_SCALE := 10.0
+
 
 enum GameState { BETTING, DEALING, PLAYER_TURN, DEALER_TURN, GAME_OVER }
 
@@ -33,10 +37,10 @@ func _ready() -> void:
 	bowser_flame_sprite = get_node("../BowserFlameEffect")
 	
 	# Load Bowser textures
-	bowser_default = load("res://assets/bowser/BowserDefault.png")
-	bowser_win = load("res://assets/bowser/bowserWin.png")
-	bowser_lose = load("res://assets/bowser/BowserLost.png")
-	bowser_tie = load("res://assets/bowser/BowserTie.png")
+	bowser_default = load("res://assets/pixel/boss/BossDefault.png")
+	bowser_win = load("res://assets/pixel/boss/BossWin.png")
+	bowser_lose = load("res://assets/pixel/boss/BossLost.png")
+	bowser_tie = load("res://assets/pixel/boss/BossTie.png")
 	
 	# Normalize Bowser sprite sizes
 	_normalize_bowser_size()
@@ -56,8 +60,8 @@ func _normalize_bowser_size() -> void:
 	var reference_size = bowser_default.get_size()
 	
 	# Store the original scale values
-	var base_scale_x = 0.7
-	var base_scale_y = 0.85
+	var base_scale_x = BOSS_SCALE
+	var base_scale_y = BOSS_SCALE
 	
 	# Calculate target display size
 	var _target_width = reference_size.x * base_scale_x
@@ -105,8 +109,8 @@ func _set_bowser_texture(sprite: Sprite2D, texture: Texture2D, animate: bool = t
 	var reference_size = bowser_default.get_size()
 	var texture_size = texture.get_size()
 	
-	var scale_x = 0.7 * (reference_size.x / texture_size.x)
-	var scale_y = 0.85 * (reference_size.y / texture_size.y)
+	var scale_x = BOSS_SCALE * (reference_size.x / texture_size.x)
+	var scale_y = BOSS_SCALE * (reference_size.y / texture_size.y)
 	var target_scale = Vector2(scale_x, scale_y)
 	
 	if animate:

@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://scripts/CrapsManager.gd" id="1_craps_script"]
 [ext_resource type="Texture2D" path="res://assets/poker/PokerFelt.svg" id="2_felt"]
-[ext_resource type="Texture2D" path="res://assets/craps/Die1.svg" id="3_die"]
-[ext_resource type="Texture2D" path="res://assets/bowser/BowserDefault.png" id="4_bowser"]
+[ext_resource type="Texture2D" path="res://assets/pixel/dice/Die1.png" id="3_die"]
+[ext_resource type="Texture2D" path="res://assets/pixel/boss/BossDefault.png" id="4_bowser"]
 [ext_resource type="AudioStream" path="res://assets/sounds/DiceRoll.wav" id="5_diceroll"]
 [ext_resource type="AudioStream" path="res://assets/sounds/ChipPlace.wav" id="6_chipplace"]
 [ext_resource type="AudioStream" path="res://assets/sounds/Win.wav" id="7_winchime"]
@@ -25,6 +25,7 @@ corner_radius_bottom_left = 8
 script = ExtResource("1_craps_script")
 
 [node name="Background" type="TextureRect" parent="."]
+texture_filter = 2
 offset_right = 1152.0
 offset_bottom = 648.0
 mouse_filter = 2
@@ -57,19 +58,19 @@ horizontal_alignment = 1
 
 [node name="BowserSprite" type="Sprite2D" parent="."]
 position = Vector2(95, 300)
-scale = Vector2(0.22, 0.22)
+scale = Vector2(3, 3)
 texture = ExtResource("4_bowser")
 
 [node name="Dice" type="Node2D" parent="."]
 
 [node name="DieOne" type="Sprite2D" parent="Dice"]
 position = Vector2(500, 150)
-scale = Vector2(0.9, 0.9)
+scale = Vector2(4, 4)
 texture = ExtResource("3_die")
 
 [node name="DieTwo" type="Sprite2D" parent="Dice"]
 position = Vector2(640, 150)
-scale = Vector2(0.9, 0.9)
+scale = Vector2(4, 4)
 texture = ExtResource("3_die")
 
 [node name="PointLabel" type="Label" parent="."]

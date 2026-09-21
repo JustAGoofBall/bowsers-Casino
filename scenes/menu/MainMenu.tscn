@@ -6,6 +6,7 @@
 [node name="MainMenu" type="Node2D"]
 
 [node name="Background" type="Sprite2D" parent="."]
+texture_filter = 2
 position = Vector2(576, 324)
 scale = Vector2(1.5, 1.5)
 texture = ExtResource("1_bg")

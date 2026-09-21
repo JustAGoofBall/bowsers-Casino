@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" path="res://scripts/RouletteManager.gd" id="1_roulette_script"]
 [ext_resource type="Texture2D" uid="uid://bw4ve0e5lcyvk" path="res://assets/BowserCasino.png" id="2_bg"]
-[ext_resource type="Texture2D" path="res://assets/roulette/RouletteBall.svg" id="3_ball"]
+[ext_resource type="Texture2D" path="res://assets/pixel/RouletteBall.png" id="3_ball"]
 [ext_resource type="Texture2D" path="res://assets/roulette/RouletteFelt.svg" id="4_felt"]
-[ext_resource type="Texture2D" path="res://assets/roulette/WheelMarker.svg" id="5_marker"]
-[ext_resource type="Texture2D" path="res://assets/bowser/BowserDefault.png" id="6_bowser"]
+[ext_resource type="Texture2D" path="res://assets/pixel/WheelMarker.png" id="5_marker"]
+[ext_resource type="Texture2D" path="res://assets/pixel/boss/BossDefault.png" id="6_bowser"]
 [ext_resource type="Texture2D" uid="uid://dabxtow6c1hgh" path="res://assets/roulette/roulette-wheel.png" id="7_wheel"]
 [ext_resource type="AudioStream" path="res://assets/sounds/Bwahaha.wav" id="8_bwahaha"]
 [ext_resource type="AudioStream" path="res://assets/sounds/BallRoll.wav" id="9_ballroll"]
@@ -17,6 +17,7 @@
 script = ExtResource("1_roulette_script")
 
 [node name="Background" type="Sprite2D" parent="."]
+texture_filter = 2
 position = Vector2(576, 324)
 scale = Vector2(1.5, 1.5)
 texture = ExtResource("2_bg")
@@ -72,7 +73,7 @@ theme_override_constants/separation = 4
 
 [node name="BowserSprite" type="Sprite2D" parent="."]
 position = Vector2(110, 320)
-scale = Vector2(0.3, 0.3)
+scale = Vector2(4, 4)
 texture = ExtResource("6_bowser")
 
 [node name="WheelArea" type="ColorRect" parent="."]
@@ -86,16 +87,18 @@ color = Color(0.08, 0.04, 0.01, 0)
 position = Vector2(130, 130)
 
 [node name="WheelSprite" type="Sprite2D" parent="WheelArea/Wheel"]
+texture_filter = 2
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("7_wheel")
 
 [node name="Ball" type="Sprite2D" parent="WheelArea/Wheel"]
 position = Vector2(0, -156)
-scale = Vector2(0.25, 0.25)
+scale = Vector2(2, 2)
 texture = ExtResource("3_ball")
 
 [node name="WheelMarker" type="Sprite2D" parent="WheelArea"]
 position = Vector2(130, -86)
+scale = Vector2(4, 4)
 texture = ExtResource("5_marker")
 
 [node name="ResultLabel" type="Label" parent="."]
@@ -161,6 +164,7 @@ offset_bottom = 602.0
 color = Color(0.12, 0.08, 0.02, 1)
 
 [node name="BoardFelt" type="TextureRect" parent="BettingBoard"]
+texture_filter = 2
 layout_mode = 0
 offset_left = 0.0
 offset_top = 0.0

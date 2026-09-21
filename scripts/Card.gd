@@ -30,11 +30,11 @@ func _load_card_texture() -> void:
 	
 	# Load the card front texture
 	var card_name = _get_card_filename()
-	var front_path = "res://assets/cards/" + card_name
+	var front_path = "res://assets/pixel/cards/" + card_name
 	front_sprite.texture = load(front_path)
 	
 	# Load the card back texture
-	var back_path = "res://assets/cards/CardBack.png"
+	var back_path = "res://assets/pixel/cards/CardBack.png"
 	back_sprite.texture = load(back_path)
 
 func _get_card_filename() -> String:

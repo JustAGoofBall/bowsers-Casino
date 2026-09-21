@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" path="res://assets/blackjack/LuigiCasinoBg.png" id="1_bg"]
 [ext_resource type="Script" uid="uid://d3u6qvpwe758w" path="res://scripts/Deck.gd" id="2_b4m5n"]
 [ext_resource type="Texture2D" uid="uid://dqy2ln8mluqvk" path="res://assets/blackjack/BarTable.png" id="2_bartable"]
-[ext_resource type="Texture2D" uid="uid://7srvflv6n36q" path="res://assets/bowser/BowserDefault.png" id="3_bowser_default"]
+[ext_resource type="Texture2D" uid="uid://7srvflv6n36q" path="res://assets/pixel/boss/BossDefault.png" id="3_bowser_default"]
 [ext_resource type="PackedScene" uid="uid://dscra21hoi4bd" path="res://scenes/PlayerHand.tscn" id="3_c5n6p"]
 [ext_resource type="PackedScene" uid="uid://k5dwnfoxdnc8" path="res://scenes/DealerHand.tscn" id="4_d6p7q"]
 [ext_resource type="Script" uid="uid://bbyohm1ccel06" path="res://scripts/UIController.gd" id="5_e7q8r"]
@@ -192,6 +192,7 @@ corner_radius_bottom_left = 6
 [node name="Main" type="Node2D" unique_id=1675205104]
 
 [node name="Background" type="Sprite2D" parent="." unique_id=1285677944]
+texture_filter = 2
 position = Vector2(576, 194)
 scale = Vector2(3, 3)
 texture = ExtResource("1_bg")
@@ -200,7 +201,7 @@ texture = ExtResource("1_bg")
 z_index = 1
 texture_filter = 1
 position = Vector2(576, 240)
-scale = Vector2(0.7, 0.85)
+scale = Vector2(10, 10)
 texture = ExtResource("3_bowser_default")
 
 [node name="BowserFlameEffect" type="Sprite2D" parent="." unique_id=2070344429]
@@ -208,10 +209,11 @@ visible = false
 z_index = 1
 texture_filter = 1
 position = Vector2(576, 240)
-scale = Vector2(0.7, 0.85)
+scale = Vector2(10, 10)
 texture = ExtResource("3_bowser_default")
 
 [node name="BarTable" type="Sprite2D" parent="." unique_id=1897247782]
+texture_filter = 2
 z_index = 2
 position = Vector2(576, 580)
 scale = Vector2(1.5, 1.5)

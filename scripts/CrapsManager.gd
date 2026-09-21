@@ -20,10 +20,10 @@ const ODDS_RATIO := {
 const MAX_ODDS_MULTIPLE := 2  # double odds
 
 const CHIPS := [
-	{"value": 10, "texture": "res://assets/roulette/chips/ChipIvory.svg"},
-	{"value": 20, "texture": "res://assets/roulette/chips/ChipRed.svg"},
-	{"value": 50, "texture": "res://assets/roulette/chips/ChipGreen.svg"},
-	{"value": 100, "texture": "res://assets/roulette/chips/ChipPurple.svg"},
+	{"value": 10, "texture": "res://assets/pixel/chips/ChipIvory.png"},
+	{"value": 20, "texture": "res://assets/pixel/chips/ChipRed.png"},
+	{"value": 50, "texture": "res://assets/pixel/chips/ChipGreen.png"},
+	{"value": 100, "texture": "res://assets/pixel/chips/ChipPurple.png"},
 ]
 
 var global_manager: Node
@@ -76,11 +76,11 @@ func _ready() -> void:
 	global_manager = get_node("/root/GlobalManager")
 	global_manager.money_changed.connect(_on_money_changed)
 
-	bowser_default = load("res://assets/bowser/BowserDefault.png")
-	bowser_win = load("res://assets/bowser/bowserWin.png")
-	bowser_lost = load("res://assets/bowser/BowserLost.png")
+	bowser_default = load("res://assets/pixel/boss/BossDefault.png")
+	bowser_win = load("res://assets/pixel/boss/BossWin.png")
+	bowser_lost = load("res://assets/pixel/boss/BossLost.png")
 	for value in range(1, 7):
-		die_textures.append(load("res://assets/craps/Die%d.svg" % value))
+		die_textures.append(load("res://assets/pixel/dice/Die%d.png" % value))
 	for chip in CHIPS:
 		chip_textures.append(load(chip["texture"]))
 
@@ -303,7 +303,7 @@ func _build_chip_rack() -> void:
 		button.texture_normal = chip_textures[i]
 		button.ignore_texture_size = true
 		button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		button.custom_minimum_size = Vector2(52, 52)
+		button.custom_minimum_size = Vector2(48, 48)
 		button.tooltip_text = "Bet %d per click" % chip["value"]
 		button.pressed.connect(_on_chip_pressed.bind(int(chip["value"])))
 

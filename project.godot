@@ -29,6 +29,10 @@ window/stretch/mode="canvas_items"
 
 [rendering]
 
+; Pixel art: 0 = Nearest. Godot defaults to Linear, which smears the
+; sprites. Note the per-node CanvasItem.texture_filter enum differs --
+; there Nearest is 1.
+textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
 textures/vram_compression/import_etc2_astc=true

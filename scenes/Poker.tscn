@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://scripts/PokerManager.gd" id="1_poker_script"]
 [ext_resource type="Texture2D" path="res://assets/poker/PokerFelt.svg" id="2_felt"]
-[ext_resource type="Texture2D" path="res://assets/cards/CardBack.png" id="3_back"]
-[ext_resource type="Texture2D" path="res://assets/poker/HeldMarker.svg" id="4_held"]
-[ext_resource type="Texture2D" path="res://assets/bowser/BowserDefault.png" id="5_bowser"]
+[ext_resource type="Texture2D" path="res://assets/pixel/cards/CardBack.png" id="3_back"]
+[ext_resource type="Texture2D" path="res://assets/pixel/HeldMarker.png" id="4_held"]
+[ext_resource type="Texture2D" path="res://assets/pixel/boss/BossDefault.png" id="5_bowser"]
 [ext_resource type="AudioStream" path="res://assets/sounds/Bwahaha.wav" id="6_bwahaha"]
 [ext_resource type="AudioStream" path="res://assets/sounds/CardFlip.wav" id="7_cardflip"]
 [ext_resource type="AudioStream" path="res://assets/sounds/Win.wav" id="8_winchime"]
@@ -25,6 +25,7 @@ corner_radius_bottom_left = 8
 script = ExtResource("1_poker_script")
 
 [node name="Background" type="TextureRect" parent="."]
+texture_filter = 2
 offset_right = 1152.0
 offset_bottom = 648.0
 mouse_filter = 2
@@ -57,7 +58,7 @@ horizontal_alignment = 1
 
 [node name="BowserSprite" type="Sprite2D" parent="."]
 position = Vector2(100, 340)
-scale = Vector2(0.26, 0.26)
+scale = Vector2(4, 4)
 texture = ExtResource("5_bowser")
 
 [node name="PaytablePanel" type="Panel" parent="."]
@@ -84,27 +85,27 @@ autowrap_mode = 2
 
 [node name="Card1" type="Sprite2D" parent="CardsContainer"]
 position = Vector2(300, 300)
-scale = Vector2(0.45, 0.45)
+scale = Vector2(3, 3)
 texture = ExtResource("3_back")
 
 [node name="Card2" type="Sprite2D" parent="CardsContainer"]
 position = Vector2(420, 300)
-scale = Vector2(0.45, 0.45)
+scale = Vector2(3, 3)
 texture = ExtResource("3_back")
 
 [node name="Card3" type="Sprite2D" parent="CardsContainer"]
 position = Vector2(540, 300)
-scale = Vector2(0.45, 0.45)
+scale = Vector2(3, 3)
 texture = ExtResource("3_back")
 
 [node name="Card4" type="Sprite2D" parent="CardsContainer"]
 position = Vector2(660, 300)
-scale = Vector2(0.45, 0.45)
+scale = Vector2(3, 3)
 texture = ExtResource("3_back")
 
 [node name="Card5" type="Sprite2D" parent="CardsContainer"]
 position = Vector2(780, 300)
-scale = Vector2(0.45, 0.45)
+scale = Vector2(3, 3)
 texture = ExtResource("3_back")
 
 [node name="HeldMarkers" type="Node2D" parent="."]
@@ -113,81 +114,31 @@ texture = ExtResource("3_back")
 visible = false
 position = Vector2(300, 200)
 texture = ExtResource("4_held")
-
-[node name="Label" type="Label" parent="HeldMarkers/Held1"]
-offset_left = -66.0
-offset_top = -14.0
-offset_right = 66.0
-offset_bottom = 14.0
-theme_override_colors/font_color = Color(0.25, 0.11, 0.02, 1)
-theme_override_font_sizes/font_size = 20
-text = "HELD"
-horizontal_alignment = 1
-vertical_alignment = 1
+scale = Vector2(4, 4)
 
 [node name="Held2" type="Sprite2D" parent="HeldMarkers"]
 visible = false
 position = Vector2(420, 200)
 texture = ExtResource("4_held")
-
-[node name="Label" type="Label" parent="HeldMarkers/Held2"]
-offset_left = -66.0
-offset_top = -14.0
-offset_right = 66.0
-offset_bottom = 14.0
-theme_override_colors/font_color = Color(0.25, 0.11, 0.02, 1)
-theme_override_font_sizes/font_size = 20
-text = "HELD"
-horizontal_alignment = 1
-vertical_alignment = 1
+scale = Vector2(4, 4)
 
 [node name="Held3" type="Sprite2D" parent="HeldMarkers"]
 visible = false
 position = Vector2(540, 200)
 texture = ExtResource("4_held")
-
-[node name="Label" type="Label" parent="HeldMarkers/Held3"]
-offset_left = -66.0
-offset_top = -14.0
-offset_right = 66.0
-offset_bottom = 14.0
-theme_override_colors/font_color = Color(0.25, 0.11, 0.02, 1)
-theme_override_font_sizes/font_size = 20
-text = "HELD"
-horizontal_alignment = 1
-vertical_alignment = 1
+scale = Vector2(4, 4)
 
 [node name="Held4" type="Sprite2D" parent="HeldMarkers"]
 visible = false
 position = Vector2(660, 200)
 texture = ExtResource("4_held")
-
-[node name="Label" type="Label" parent="HeldMarkers/Held4"]
-offset_left = -66.0
-offset_top = -14.0
-offset_right = 66.0
-offset_bottom = 14.0
-theme_override_colors/font_color = Color(0.25, 0.11, 0.02, 1)
-theme_override_font_sizes/font_size = 20
-text = "HELD"
-horizontal_alignment = 1
-vertical_alignment = 1
+scale = Vector2(4, 4)
 
 [node name="Held5" type="Sprite2D" parent="HeldMarkers"]
 visible = false
 position = Vector2(780, 200)
 texture = ExtResource("4_held")
-
-[node name="Label" type="Label" parent="HeldMarkers/Held5"]
-offset_left = -66.0
-offset_top = -14.0
-offset_right = 66.0
-offset_bottom = 14.0
-theme_override_colors/font_color = Color(0.25, 0.11, 0.02, 1)
-theme_override_font_sizes/font_size = 20
-text = "HELD"
-horizontal_alignment = 1
-vertical_alignment = 1
+scale = Vector2(4, 4)
 
 [node name="HoldButtons" type="Control" parent="."]
 offset_right = 1152.0
